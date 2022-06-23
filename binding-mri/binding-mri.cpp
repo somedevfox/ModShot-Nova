@@ -89,7 +89,9 @@ void nikoBindingInit();
 void oneshotBindingInit();
 void modshotBindingInit();
 void steamBindingInit();
+#ifndef FMOD
 void aleffectBindingInit();
+#endif
 void screenBindingInit();
 RB_METHOD(mriPrint);
 RB_METHOD(mriP);
@@ -127,7 +129,9 @@ static void mriBindingInit()
 	oneshotBindingInit();
 	modshotBindingInit();
 	steamBindingInit();
+	#ifndef FMOD
 	aleffectBindingInit();
+	#endif
 	screenBindingInit();
 	rb_define_global_const("MODSHOT_VERSION", rb_str_new_cstr(MODSHOT_VERSION));
 	if (rgssVer >= 3)

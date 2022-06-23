@@ -30,12 +30,18 @@
 #include <SDL2/SDL_touch.h>
 #include <SDL2/SDL_rect.h>
 
+#ifndef FMOD
 #include <al.h>
+#endif
 
 #include "sharedstate.h"
 #include "graphics.h"
 #include "settingsmenu.h"
+
+#ifndef FMOD
 #include "al-util.h"
+#endif
+
 #include "debugwriter.h"
 
 #include "oneshot.h"
@@ -51,6 +57,7 @@
 
 #define KEYCODE_TO_SCUFFEDCODE(keycode) (((keycode & 0xff) | ((keycode & 0x180) == 0x100 ? 0x180 : 0)) + SDL_NUM_SCANCODES)
 
+#ifndef FMOD
 typedef void (ALC_APIENTRY *LPALCDEVICEPAUSESOFT) (ALCdevice *device);
 typedef void (ALC_APIENTRY *LPALCDEVICERESUMESOFT) (ALCdevice *device);
 
@@ -79,6 +86,7 @@ initALCFunctions(ALCdevice *alcDev)
 }
 
 #define HAVE_ALC_DEVICE_PAUSE alc.DevicePause
+#endif
 
 uint8_t EventThread::keyStates[];
 Uint16 EventThread::modkeys;
@@ -131,7 +139,9 @@ void EventThread::process(RGSSThreadData &rtData)
     SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
 
+	#ifndef FMOD
 	initALCFunctions(rtData.alcDev);
+	#endif
 
 	// XXX this function breaks input focus on OSX
 	#ifndef __APPLE__
@@ -663,8 +673,10 @@ int EventThread::eventFilter(void *data, SDL_Event *event)
 	case SDL_APP_WILLENTERBACKGROUND :
 		Debug() << "SDL_APP_WILLENTERBACKGROUND";
 
+		#ifndef FMOD
 		if (HAVE_ALC_DEVICE_PAUSE)
 			alc.DevicePause(rtData.alcDev);
+		#endif
 
 		rtData.syncPoint.haltThreads();
 
@@ -681,8 +693,10 @@ int EventThread::eventFilter(void *data, SDL_Event *event)
 	case SDL_APP_DIDENTERFOREGROUND :
 		Debug() << "SDL_APP_DIDENTERFOREGROUND";
 
+		#ifndef FMOD
 		if (HAVE_ALC_DEVICE_PAUSE)
 			alc.DeviceResume(rtData.alcDev);
+		#endif
 
 		rtData.syncPoint.resumeThreads();
 

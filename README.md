@@ -29,9 +29,17 @@ The main upshot of this, of course, is remaining on par with ruby in terms of ge
 Previously, C extensions were very jank with ModShot, **however** now you can use a C extension right from your own Ruby install!
 (Provided the version is the same, and the msys2 evironment is the same. I'll get back to this later.)
 
-## Build options
+## Using clang
 
-Unfortunately because of the way ModShot is set up, you will need to pass build options to Make **and** Meson, if it pertains to dependencies. (ruby ver, opt level, etc.)
+//TODO
+
+## FMOD
+
+FMOD support is very... interesting. It involves a lot of licensing, legalese, etc. 
+If you want to enable FMOD support, download FMOD and extract the zip into a folder named `fmod`.
+You will then need to pass `-Dfmod=true` as an option.
+
+ModShot should handle everything from there, it's up to you to follow the FMOD license.
 
 # Options
 
@@ -40,6 +48,7 @@ RUBY_VER && -Dmri_version (default 3.1) sets the ruby version.
 -Dsteam (default false) sets the build to use steam.
 --build-type (default Release) sets the build type.
 -Dbuild_static (default true) sets the build to be static. (True is faster, but with longer startup times.)
+-Dfmod (default false) toggles FMOD instead of OpenAL.
 ```
 
 ## Building on Windows
@@ -93,7 +102,7 @@ This should create a folder called `out` with your build of ModShot all ready to
 
 ## Configuration
 
-*ModShot* reads configuration data from the file "oneshot.conf". The format is ini-style. Do *not* use quotes around file paths (spaces won't break). Lines starting with '#' are comments. See 'oneshot.conf.sample' for a list of accepted entries. Note that this feature appears to be brpken for the moment until we get around to fixing it. Using command line options does work, however.
+*ModShot* reads configuration data from the file "oneshot.conf". The format is ini-style. Do *not* use quotes around file paths (spaces won't break). Lines starting with '#' are comments. See 'oneshot.conf.sample' for a list of accepted entries.
 
 All option entries can alternatively be specified as command line options. Any options that are not arrays (eg. preloaded scripts) specified as command line options will override entries in oneshot.conf. Note that you will have to wrap values containing spaces in quotes (unlike in oneshot.conf).
 

@@ -12,8 +12,6 @@ endif
 global_include_dirs += include_directories('.')
 
 binding_source = [files(
-    'aleffect-binding.cpp',
-    'audio-binding.cpp',
     'binding-mri.cpp',
     'binding-util.cpp',
     'bitmap-binding.cpp',
@@ -37,5 +35,16 @@ binding_source = [files(
     'wallpaper-binding.cpp',
     'window-binding.cpp',
 )]
+
+if fmod
+global_sources += [files(
+    'fmod-binding/audio-binding.cpp'
+)]
+else
+global_sources += [files(
+    'al-binding/aleffect-binding.cpp',
+    'al-binding/audio-binding.cpp'
+)]
+endif
 
 global_sources += binding_source

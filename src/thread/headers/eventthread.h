@@ -37,7 +37,9 @@
 
 #include <stdint.h>
 
+#ifndef FMOD
 #include <alc.h>
+#endif
 
 struct RGSSThreadData;
 struct SDL_Window;
@@ -262,7 +264,9 @@ struct RGSSThreadData
 	SyncPoint syncPoint;
 
 	SDL_Window *window;
+	#ifndef FMOD
 	ALCdevice *alcDev;
+	#endif
 
 	Vec2 sizeResoRatio;
 	Vec2i screenOffset;
@@ -276,13 +280,17 @@ struct RGSSThreadData
 
 	RGSSThreadData(EventThread *ethread,
 	               SDL_Window *window,
+				   #ifndef FMOD
 	               ALCdevice *alcDev,
+				   #endif
 	               int refreshRate,
 	               const Config& newconf)
 	    : allowExit(true),
 	      ethread(ethread),
 	      window(window),
+		  #ifndef FMOD
 	      alcDev(alcDev),
+		  #endif
 	      sizeResoRatio(1, 1),
 	      refreshRate(refreshRate),
 	      config(newconf)

@@ -41,6 +41,8 @@ elif gfx_backend == 'gl'
     global_dependencies += dependency('gl')
 endif
 
+fmod = get_option('fmod')
+
 # ====================
 # Main source
 # ====================
@@ -105,6 +107,10 @@ subdir('assets')
 subdir('scripts')
 
 global_include_dirs += include_directories('src', 'binding-mri')
+
+if fmod
+    global_include_dirs += include_directories('fmod/api/core/inc', 'fmod/api/fsbank/inc', 'fmod/api/studio/inc')
+endif
 
 rpath = ''
 if host_system == 'windows'
