@@ -30,7 +30,7 @@
 #include <SDL2/SDL_touch.h>
 #include <SDL2/SDL_rect.h>
 
-#ifndef FMOD
+#ifndef USE_FMOD
 #include <al.h>
 #endif
 
@@ -38,7 +38,7 @@
 #include "graphics.h"
 #include "settingsmenu.h"
 
-#ifndef FMOD
+#ifndef USE_FMOD
 #include "al-util.h"
 #endif
 
@@ -57,7 +57,7 @@
 
 #define KEYCODE_TO_SCUFFEDCODE(keycode) (((keycode & 0xff) | ((keycode & 0x180) == 0x100 ? 0x180 : 0)) + SDL_NUM_SCANCODES)
 
-#ifndef FMOD
+#ifndef USE_FMOD
 typedef void (ALC_APIENTRY *LPALCDEVICEPAUSESOFT) (ALCdevice *device);
 typedef void (ALC_APIENTRY *LPALCDEVICERESUMESOFT) (ALCdevice *device);
 
@@ -139,7 +139,7 @@ void EventThread::process(RGSSThreadData &rtData)
     SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
 
-	#ifndef FMOD
+	#ifndef USE_FMOD
 	initALCFunctions(rtData.alcDev);
 	#endif
 
@@ -409,7 +409,7 @@ void EventThread::process(RGSSThreadData &rtData)
 				break;
 			}
 
-			
+
 			if (event.key.keysym.scancode == SDL_SCANCODE_F3 && rtData.allowForceQuit) {
 				// ModShot addition: force quit the game, no prompting or saving
 				Debug() << "Force terminating ModShot";
@@ -673,7 +673,7 @@ int EventThread::eventFilter(void *data, SDL_Event *event)
 	case SDL_APP_WILLENTERBACKGROUND :
 		Debug() << "SDL_APP_WILLENTERBACKGROUND";
 
-		#ifndef FMOD
+		#ifndef USE_FMOD
 		if (HAVE_ALC_DEVICE_PAUSE)
 			alc.DevicePause(rtData.alcDev);
 		#endif
@@ -693,7 +693,7 @@ int EventThread::eventFilter(void *data, SDL_Event *event)
 	case SDL_APP_DIDENTERFOREGROUND :
 		Debug() << "SDL_APP_DIDENTERFOREGROUND";
 
-		#ifndef FMOD
+		#ifndef USE_FMOD
 		if (HAVE_ALC_DEVICE_PAUSE)
 			alc.DeviceResume(rtData.alcDev);
 		#endif

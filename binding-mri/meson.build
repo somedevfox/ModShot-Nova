@@ -38,8 +38,12 @@ binding_source = [files(
 
 if fmod
 global_sources += [files(
-    'fmod-binding/audio-binding.cpp'
+    'fmod-binding/fmod-studio-binding.cpp',
+    'fmod-binding/fmod-core-binding.cpp',
+    'fmod-binding/fmod_enums.cpp',
+    'fmod-binding/fmod_structs.cpp',
 )]
+global_include_dirs += include_directories('fmod-binding')
 else
 global_sources += [files(
     'al-binding/aleffect-binding.cpp',

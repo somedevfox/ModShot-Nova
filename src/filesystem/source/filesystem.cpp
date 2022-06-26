@@ -31,7 +31,7 @@
 
 #include <physfs.h>
 
-#ifndef FMOD
+#ifndef USE_FMOD
 #include <SDL2/SDL_sound.h>
 #endif
 

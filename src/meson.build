@@ -14,26 +14,33 @@ webp = dependency('libwebp', static: build_static)
 zlib = dependency('zlib', static: build_static)
 nsgif = dependency('libnsgif', static: build_static)
 
+fmod_arch_prefix = ''
+if host_system == 'windows'
+	fmod_arch_prefix = 'x64'
+else
+	fmod_arch_prefix = 'x86_64'
+endif
+
 if fmod
 	# FUck
 	fmod_lib_path = get_option('fmod_core_lib_dir')
 	if fmod_lib_path == ''
 	  fmod_lib_path = join_paths(
-		meson.global_source_root(), 'fmod/api/core/lib/x86_64'
+		meson.global_source_root(), 'fmod/api/core/lib/' + fmod_arch_prefix
 	  )
 	endif
 
 	fsbank_lib_path = get_option('fmod_fsbank_lib_dir')
 	if fsbank_lib_path == ''
 	  fsbank_lib_path = join_paths(
-		meson.global_source_root(), 'fmod/api/fsbank/lib/x86_64'
+		meson.global_source_root(), 'fmod/api/fsbank/lib/' + fmod_arch_prefix
 	  )
 	endif
 
 	studio_lib_path = get_option('fmod_studio_lib_dir')
 	if studio_lib_path == ''
 	  studio_lib_path = join_paths(
-		meson.global_source_root(), 'fmod/api/studio/lib/x86_64'
+		meson.global_source_root(), 'fmod/api/studio/lib/' + fmod_arch_prefix
 	  )
 	endif
 
@@ -152,7 +159,7 @@ if steam == true
 endif
 
 if fmod
-	global_args += '-DFMOD'
+	global_args += '-DUSE_FMOD'
 	global_include_dirs += include_directories('fmod/headers')
 	global_sources += files(
 		'fmod/source/audio.cpp'

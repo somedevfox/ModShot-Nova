@@ -9,6 +9,14 @@ at_exit do
   save unless $game_switches[99] || ($game_system.map_interpreter.running? || !$scene.is_a?(Scene_Map))
 end
 
+module Audio
+  class << self
+    def method_missing(*args)
+    end
+  end
+end
+
+
 begin
   $console = Graphics.fullscreen
   Graphics.frame_rate = 60
@@ -26,8 +34,8 @@ begin
   Oneshot.allow_exit false
   Oneshot.exiting false
 
-#  x = Oneshot.textinput("Foo Bar")
-#  print("#{x}")
+  #  x = Oneshot.textinput("Foo Bar")
+  #  print("#{x}")
 
   # Call main method as long as $scene is effective
   while $scene != nil
@@ -38,9 +46,9 @@ begin
   Graphics.transition(20)
 
   if Journal.active?
-    Journal.set ''
+    Journal.set ""
   end
-  
+
   Oneshot.allow_exit true
 rescue Errno::ENOENT
   # Supplement Errno::ENOENT exception
