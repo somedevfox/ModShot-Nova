@@ -16,6 +16,7 @@ module Audio
   end
 end
 
+puts FMOD::Studio::Bank.new.is_valid
 
 begin
   $console = Graphics.fullscreen

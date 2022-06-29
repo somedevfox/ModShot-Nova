@@ -97,7 +97,6 @@ void aleffectBindingInit();
 #else
 void fmodCoreBindingInit();
 void fmodStudioBindingInit();
-void fmodStructsBindingInit();
 #endif
 void screenBindingInit();
 RB_METHOD(mriPrint);
@@ -141,7 +140,6 @@ static void mriBindingInit()
 	#else
 	fmodCoreBindingInit();
 	fmodStudioBindingInit();
-	fmodStructsBindingInit();
 	#endif
 	screenBindingInit();
 	rb_define_global_const("MODSHOT_VERSION", rb_str_new_cstr(MODSHOT_VERSION));
