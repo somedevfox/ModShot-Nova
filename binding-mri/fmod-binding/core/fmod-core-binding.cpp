@@ -3,7 +3,6 @@
 
 VALUE rb_mFMOD = Qnil;
 VALUE rb_mFMOD_Core = Qnil;
-VALUE rb_mFMOD_Studio = Qnil;
 
 void fmodCoreBindingInit() {
     rb_mFMOD = rb_define_module("FMOD");

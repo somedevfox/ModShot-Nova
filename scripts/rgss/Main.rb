@@ -16,7 +16,9 @@ module Audio
   end
 end
 
-puts FMOD::Studio::Bank.new.is_valid
+result, bank = FMOD::Studio::System.load_bank_file("Master.bank", 0)
+puts "result: #{result}, bank: #{bank}"
+puts bank.is_valid
 
 begin
   $console = Graphics.fullscreen

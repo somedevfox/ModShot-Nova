@@ -26,16 +26,58 @@
                                            \
         ~Klass()                           \
         {                                  \
-            free(p);                       \
+            /* free(p); */                 \
         }                                  \
     };
 
 /*
-* Usage:
-* Klass -> EventDescription (name of class to be defined)
-* wrap_type -> FMOD_STUDIO_EVENTDESCRIPTION (Type we are wrapping)
-? DEF_FMOD_WRAPPER(EventDescription, FMOD_STUDIO_EVENTDESCRIPTION);
+* Return result macros
+* These macros cover returning results of function calls in fmod
+* Most functions have 2 (or should have 2) return values,
+* ordered by an FMOD_RESULT and then the actual return value.
+*
+* FMOD_RESULT_WRAP is for when we need to wrap an FMOD struct pointer
+! but the struct has no defined members (I.e FMOD_STUDIO_BANK)
+*
+* FMOD_RESULT_CONVERT is for when we need to convert the return value
+* using a standard ruby conversion macro (like INT2NUM)
+*
+* FMOD_RESULT_NO_WRAP is for when we need to wrap an FMOD struct pointer,
+! but the struct has defined members (I.e. FMOD_GUID)
 */
+#define FMOD_RESULT_BASE             \
+    VALUE return_ary = rb_ary_new(); \
+    rb_ary_push(return_ary, INT2NUM(result));
+
+#define FMOD_RESULT_RET return return_ary;
+
+#define FMOD_RESULT_WRAP(val, wrap)                                    \
+    FMOD_RESULT_BASE                                                   \
+    if (val)                                                           \
+    {                                                                  \
+        VALUE return_val = rb_class_new_instance(0, NULL, rb_c##wrap); \
+        setPrivateData(return_val, new wrap(val));                     \
+        rb_ary_push(return_ary, return_val);                           \
+    }                                                                  \
+    FMOD_RESULT_RET
+
+#define FMOD_RESULT_CONVERT(val, convert)       \
+    FMOD_RESULT_BASE                            \
+    if (val)                                    \
+    {                                           \
+        rb_ary_push(return_array, convert(val)) \
+    }                                           \
+    FMOD_RESULT_RET
+
+#define FMOD_RESULT_NO_WRAP(val, klass)                           \
+    FMOD_RESULT_BASE                                              \
+    if (val)                                                      \
+    {                                                             \
+        VALUE return_val = rb_class_new_instance(0, NULL, klass); \
+        setPrivateData(return_val, val);                          \
+        rb_ary_push(return_ary, return_val);                      \
+    }                                                             \
+    FMOD_RESULT_RET
 
 //? Define wrapper for Bank
 DEF_FMOD_WRAPPER(Bank, FMOD_STUDIO_BANK);
@@ -47,6 +89,9 @@ extern VALUE rb_mFMOD;
 extern VALUE rb_mFMOD_Core;
 extern VALUE rb_mFMOD_Studio;
 
+extern VALUE rb_cBank;
+
 void bindFmodStudioBank();
+void bindFmodStudioSystem();
 
 #endif

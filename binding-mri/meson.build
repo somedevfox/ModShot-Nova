@@ -39,6 +39,7 @@ binding_source = [files(
 if fmod
 global_sources += [files(
     'fmod-binding/studio/fmod-studio-binding.cpp',
+    'fmod-binding/studio/system.cpp',
     'fmod-binding/studio/bank.cpp',
     'fmod-binding/core/fmod-core-binding.cpp',
     'fmod-binding/fmod_enums.cpp',
