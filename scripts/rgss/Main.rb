@@ -19,6 +19,10 @@ end
 result, bank = FMOD::Studio::System.load_bank_file("Master.bank", 0)
 puts "result: #{result}, bank: #{bank}"
 puts bank.is_valid
+result, guid = bank.get_id
+guid.data4 = "eeeee"
+puts result
+puts "guid: #{guid}, data1: #{guid.data1}, data2: #{guid.data2}, data3: #{guid.data3}, data4: #{guid.data4},"
 
 begin
   $console = Graphics.fullscreen

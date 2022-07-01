@@ -13,5 +13,6 @@ void fmodStudioBindingInit()
     rb_mFMOD_Studio = rb_define_module_under(rb_mFMOD, "Studio");
 
     bindFmodStudioSystem();
+    bindFmodStudioStructs();
     bindFmodStudioBank();
 }

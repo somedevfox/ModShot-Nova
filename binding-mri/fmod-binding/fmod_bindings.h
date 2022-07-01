@@ -90,8 +90,10 @@ extern VALUE rb_mFMOD_Core;
 extern VALUE rb_mFMOD_Studio;
 
 extern VALUE rb_cBank;
+extern VALUE rb_cGUID;
 
 void bindFmodStudioBank();
 void bindFmodStudioSystem();
+void bindFmodStudioStructs();
 
 #endif

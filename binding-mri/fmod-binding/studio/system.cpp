@@ -11,7 +11,7 @@ RB_METHOD(loadBankFile) {
 
     //? Initialize bank as a NULL pointer
     FMOD_STUDIO_BANK* bank = NULL;
-    //? Load baunk
+    //? Load bank
     FMOD_RESULT result = FMOD_Studio_System_LoadBankFile(
         shState->audio().studio_system, filename, flags, &bank
     );
