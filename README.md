@@ -1,7 +1,8 @@
 # ModShot-Core
-[![Build ModShot Ubuntu ](https://github.com/Astrabit-ST/ModShot-Core/actions/workflows/build-ubuntu.yml/badge.svg)](https://github.com/Astrabit-ST/ModShot-Core/actions/workflows/build-ubuntu.yml)[![Build ModShot Windows](https://github.com/Astrabit-ST/ModShot-Core/actions/workflows/build-windows.yml/badge.svg)](https://github.com/Astrabit-ST/ModShot-Core/actions/workflows/build-windows.yml)
 
-This is a even more MORE specialized fork of a specialized fork of ([mkxp by Ancurio](https://github.com/Ancurio/mkxp) designed for [*OneShot*](http://oneshot-game.com/)) for OneShot mods.
+[![ModShot CI](https://github.com/Astrabit-ST/ModShot-Core/actions/workflows/ci.yml/badge.svg)](https://github.com/Astrabit-ST/ModShot-Core/actions/workflows/ci.yml)
+
+**ModShot** is a even more MORE specialized fork of a specialized fork of ([mkxp by Ancurio](https://github.com/Ancurio/mkxp) designed for [OneShot](http://oneshot-game.com/)) for OneShot mods.
 
 Thanks to [hunternet93](https://github.com/hunternet93) for starting the reimplementation of the journal program!
 
@@ -9,7 +10,9 @@ Thanks to [rkevin-arch](https://github.com/rkevin-arch) for the docker build!
 
 Thanks to [somedevfox](https://github.com/somedevfox) for helping ModShot ditch conan!
 
-Thanks to [hat_kid](https://github.com/thehatkid) for fixing username problem, introducing Notifications API and fixing wallpapers!
+Thanks to [hat_kid](https://github.com/thehatkid) for fixing a lot such as wallpaper bindings, unicode Win32 username issue, and introducing
+[Win32 tray ballons](https://docs.microsoft.com/en-us/windows/win32/shell/notification-area) and
+[GTK notifications](https://developer-old.gnome.org/GNotification/)!
 
 > mkxp is a project that seeks to provide a fully open source implementation of the Ruby Game Scripting System (RGSS) interface used in the popular game creation software "RPG Maker XP", "RPG Maker VX" and "RPG Maker VX Ace" (trademark by Enterbrain, Inc.), with focus on Linux. The goal is to be able to run games created with the above software natively without changing a single file.
 >
@@ -44,7 +47,7 @@ ModShot should handle everything from there, it's up to you to follow the FMOD l
 FMOD bindings also do not supply the `Audio` module. You may create wrapper functions for that if you wish.
 AL Effect bndings are not supplied as well for obvious reasons.
 
-# Options
+### Options
 
 ```
 RUBY_VER && -Dmri_version (default 3.1) sets the ruby version.
@@ -113,9 +116,8 @@ The syntax is: `--<option>=<value>`
 
 Example: `./oneshot --gameFolder="oneshot" --vsync=true`
 
-### External gems
+## External gems
 
 Modshot builds come pre-packaged with the ruby standard library in `/lib/ruby/`. You can require gems from this folder at any point by using `require '<gem>'`.
 
 You can ship your own gems by finding the gem install location (Typically `C:\Ruby27-x64\lib\ruby\gems\2.7.0\gems`), going inside the gem, and copying over all the files inside lib.
-
