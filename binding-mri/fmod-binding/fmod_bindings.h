@@ -24,10 +24,7 @@
         Klass(wrap_type *p)                \
             : p(p) {}                      \
                                            \
-        ~Klass()                           \
-        {                                  \
-            /* free(p); */                 \
-        }                                  \
+        ~Klass();                          \
     };
 
 /*
@@ -42,8 +39,16 @@
 * FMOD_RESULT_CONVERT is for when we need to convert the return value
 * using a standard ruby conversion macro (like INT2NUM)
 *
+* FMOD_RESULT_VALUE is for when we want to add a VALUE to the
+* return array.
+*
+* FMOD_RESULT_NO_CHECK is for when we are almost always returning a value
+* and the value could be 0, it also acts like FMOD_RESULT_CONVERT
+*
 * FMOD_RESULT_NO_WRAP is for when we need to wrap an FMOD struct pointer,
 ! but the struct has defined members (I.e. FMOD_GUID)
+*
+* FMOD_RESULT_SIMPLE just returns the result. That's it.
 */
 #define FMOD_RESULT_BASE             \
     VALUE return_ary = rb_ary_new(); \
@@ -53,7 +58,7 @@
 
 #define FMOD_RESULT_WRAP(val, wrap)                                    \
     FMOD_RESULT_BASE                                                   \
-    if (val)                                                           \
+    if (val || result == FMOD_OK)                                      \
     {                                                                  \
         VALUE return_val = rb_class_new_instance(0, NULL, rb_c##wrap); \
         setPrivateData(return_val, new wrap(val));                     \
@@ -61,22 +66,39 @@
     }                                                                  \
     FMOD_RESULT_RET
 
-#define FMOD_RESULT_CONVERT(val, convert)       \
-    FMOD_RESULT_BASE                            \
-    if (val)                                    \
-    {                                           \
-        rb_ary_push(return_array, convert(val)) \
-    }                                           \
+#define FMOD_RESULT_CONVERT(val, convert)      \
+    FMOD_RESULT_BASE                           \
+    if (val || result == FMOD_OK)              \
+    {                                          \
+        rb_ary_push(return_ary, convert(val)); \
+    }                                          \
+    FMOD_RESULT_RET
+
+#define FMOD_RESULT_NO_CHECK(val, convert) \
+    FMOD_RESULT_BASE                       \
+    rb_ary_push(return_ary, convert(val)); \
+    FMOD_RESULT_RET
+
+#define FMOD_RESULT_VALUE(val)        \
+    FMOD_RESULT_BASE                  \
+    if (val || result == FMOD_OK)     \
+    {                                 \
+        rb_ary_push(return_ary, val); \
+    }                                 \
     FMOD_RESULT_RET
 
 #define FMOD_RESULT_NO_WRAP(val, klass)                           \
     FMOD_RESULT_BASE                                              \
-    if (val)                                                      \
+    if (val || result == FMOD_OK)                                 \
     {                                                             \
         VALUE return_val = rb_class_new_instance(0, NULL, klass); \
         setPrivateData(return_val, val);                          \
         rb_ary_push(return_ary, return_val);                      \
     }                                                             \
+    FMOD_RESULT_RET
+
+#define FMOD_RESULT_SIMPLE \
+    FMOD_RESULT_BASE       \
     FMOD_RESULT_RET
 
 //? Define wrapper for Bank
@@ -95,5 +117,52 @@ extern VALUE rb_cGUID;
 void bindFmodStudioBank();
 void bindFmodStudioSystem();
 void bindFmodStudioStructs();
+
+//? These functions are common, so we share them
+//? in the header
+//? Why do these need to be inline? I have no idea!
+inline RB_METHOD(fmodGetUserData)
+{
+    RB_UNUSED_PARAM;
+
+    //? Get wrapper
+    Bank *b = getPrivateData<Bank>(self);
+    //? Set up variables
+    VALUE data;
+
+    //? Call function, I hate the void** cast but whatever
+    FMOD_RESULT result = FMOD_Studio_Bank_GetUserData(
+        b->p, (void **) &data);
+
+    //? Return the result, you know the drill
+    FMOD_RESULT_BASE;
+    if (data) {
+        rb_ary_push(return_ary, data);
+    }
+    FMOD_RESULT_RET;
+}
+
+inline RB_METHOD(fmodSetUserData)
+{
+    VALUE arg;
+    rb_get_args(argc, argv, "o", &arg RB_ARG_END);
+
+    //? Set the arg as an instance variable so ruby doesn't garbage
+    //? collect
+    rb_iv_set(self, "userdata_dont_touch_please", arg);
+    //! If someone touches this I'm gonna yell
+    //! because they won't know why their user data mutated
+    //! into something else
+
+    //? Get wrapper
+    Bank *b = getPrivateData<Bank>(self);
+
+    //? Call function
+    FMOD_RESULT result = FMOD_Studio_Bank_SetUserData(
+        b->p, (void *)arg);
+
+    //? Only need to return the result!
+    FMOD_RESULT_SIMPLE;
+}
 
 #endif

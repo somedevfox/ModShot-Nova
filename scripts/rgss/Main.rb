@@ -16,13 +16,18 @@ module Audio
   end
 end
 
-result, bank = FMOD::Studio::System.load_bank_file("Master.bank", 0)
-puts "result: #{result}, bank: #{bank}"
-puts bank.is_valid
-result, guid = bank.get_id
-guid.data4 = "eeeee"
-puts result
-puts "guid: #{guid}, data1: #{guid.data1}, data2: #{guid.data2}, data3: #{guid.data3}, data4: #{guid.data4},"
+result, bank = FMOD::Studio::System.load_bank_file("Master.bank", FMOD::Studio::LoadBankFlags::NONBLOCKING)
+res2, strbank = FMOD::Studio::System.load_bank_file("Master.strings.bank", 0)
+puts bank.is_valid.to_s
+puts bank.get_loading_state.to_s
+puts bank.get_path.to_s
+#strbank.get_string_count[1].times do |i|
+#  puts strbank.get_string_info(i).to_s
+#end
+
+puts bank.get_user_data
+puts bank.set_user_data(Game_Map.new)
+puts bank.get_user_data.inspect
 
 begin
   $console = Graphics.fullscreen
