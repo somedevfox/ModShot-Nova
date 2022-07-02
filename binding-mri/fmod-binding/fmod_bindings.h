@@ -120,49 +120,37 @@ void bindFmodStudioStructs();
 
 //? These functions are common, so we share them
 //? in the header
-//? Why do these need to be inline? I have no idea!
-inline RB_METHOD(fmodGetUserData)
-{
-    RB_UNUSED_PARAM;
-
-    //? Get wrapper
-    Bank *b = getPrivateData<Bank>(self);
-    //? Set up variables
-    VALUE data;
-
-    //? Call function, I hate the void** cast but whatever
-    FMOD_RESULT result = FMOD_Studio_Bank_GetUserData(
-        b->p, (void **) &data);
-
-    //? Return the result, you know the drill
-    FMOD_RESULT_BASE;
-    if (data) {
-        rb_ary_push(return_ary, data);
+#define FMOD_USERDATA_FUNC(func_base, type)                 \
+    RB_METHOD(fmodGetUserData)                              \
+    {                                                       \
+        RB_UNUSED_PARAM;                                    \
+                                                            \
+        type *b = getPrivateData<type>(self);               \
+        VALUE data;                                         \
+                                                            \
+        FMOD_RESULT result = func_base##_GetUserData(       \
+            b->p, (void **)&data);                          \
+                                                            \
+        FMOD_RESULT_BASE;                                   \
+        if (data)                                           \
+        {                                                   \
+            rb_ary_push(return_ary, data);                  \
+        }                                                   \
+        FMOD_RESULT_RET;                                    \
+    }                                                       \
+    RB_METHOD(fmodSetUserData)                              \
+    {                                                       \
+        VALUE arg;                                          \
+        rb_get_args(argc, argv, "o", &arg RB_ARG_END);      \
+                                                            \
+        rb_iv_set(self, "userdata_dont_touch_please", arg); \
+                                                            \
+        type *b = getPrivateData<type>(self);               \
+                                                            \
+        FMOD_RESULT result = func_base##_SetUserData(       \
+            b->p, (void *)arg);                             \
+                                                            \
+        FMOD_RESULT_SIMPLE;                                 \
     }
-    FMOD_RESULT_RET;
-}
-
-inline RB_METHOD(fmodSetUserData)
-{
-    VALUE arg;
-    rb_get_args(argc, argv, "o", &arg RB_ARG_END);
-
-    //? Set the arg as an instance variable so ruby doesn't garbage
-    //? collect
-    rb_iv_set(self, "userdata_dont_touch_please", arg);
-    //! If someone touches this I'm gonna yell
-    //! because they won't know why their user data mutated
-    //! into something else
-
-    //? Get wrapper
-    Bank *b = getPrivateData<Bank>(self);
-
-    //? Call function
-    FMOD_RESULT result = FMOD_Studio_Bank_SetUserData(
-        b->p, (void *)arg);
-
-    //? Only need to return the result!
-    FMOD_RESULT_SIMPLE;
-}
 
 #endif

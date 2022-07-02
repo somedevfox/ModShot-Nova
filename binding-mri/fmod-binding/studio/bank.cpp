@@ -219,7 +219,7 @@ RB_METHOD(bankGetStringInfo) {
     FMOD_RESULT_RET;
 }
 
-
+FMOD_USERDATA_FUNC(FMOD_Studio_Bank, Bank);
 
 void bindFmodStudioBank()
 {
