@@ -207,18 +207,19 @@ RB_METHOD(bankGetVCAList)
         array = new FMOD_STUDIO_VCA *[count];
 
         result = FMOD_Studio_Bank_GetVCAList(
-            b->p, array, count, NULL
-        );
+            b->p, array, count, NULL);
     }
 
     FMOD_RESULT_BASE;
-    if (array && result == FMOD_OK) {
+    if (array && result == FMOD_OK)
+    {
         //? Convert the vca array to a ruby array, painfully
         VALUE vca_ary = rb_ary_new();
         //? Iterate over all elements in the array
         //? May potentially crash if the amount of elements
         //? is different from count
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++)
+        {
             //? Convert VCA and add it to the array
             VALUE ele = rb_class_new_instance(0, NULL, rb_cVCA);
             setPrivateData(ele, new VCA(array[i]));
@@ -228,6 +229,53 @@ RB_METHOD(bankGetVCAList)
         //? This likely memory leaks I think, but we'll see
         rb_ary_push(return_ary, vca_ary);
         delete array; //? This shouldn't free the elements?
+    }
+    FMOD_RESULT_RET;
+}
+
+RB_METHOD(bankGetBusCount)
+{
+    RB_UNUSED_PARAM;
+    Bank *b = getPrivateData<Bank>(self);
+    int count;
+
+    FMOD_RESULT result = FMOD_Studio_Bank_GetBusCount(b->p, &count);
+
+    FMOD_RESULT_CONVERT(count, INT2NUM);
+}
+
+RB_METHOD(bankGetBusList)
+{
+    RB_UNUSED_PARAM;
+
+    Bank *b = getPrivateData<Bank>(self);
+
+    int count;
+    FMOD_STUDIO_BUS **array = NULL;
+    FMOD_RESULT result = FMOD_Studio_Bank_GetBusCount(b->p, &count);
+
+    if (result == FMOD_OK)
+    {
+        array = new FMOD_STUDIO_BUS *[count];
+
+        result = FMOD_Studio_Bank_GetBusList(
+            b->p, array, count, NULL);
+    }
+
+    FMOD_RESULT_BASE;
+    if (array && result == FMOD_OK)
+    {
+        VALUE bus_ary = rb_ary_new();
+
+        for (int i = 0; i < count; i++)
+        {
+            VALUE ele = rb_class_new_instance(0, NULL, rb_cBus);
+            setPrivateData(ele, new Bus(array[i]));
+            rb_ary_push(bus_ary, ele);
+        }
+
+        rb_ary_push(return_ary, bus_ary);
+        delete array;
     }
     FMOD_RESULT_RET;
 }
@@ -251,4 +299,6 @@ void bindFmodStudioBank()
     _rb_define_method(rb_cBank, "set_user_data", fmodSetUserData);
     _rb_define_method(rb_cBank, "get_vca_count", bankGetVCACount);
     _rb_define_method(rb_cBank, "get_vca_list", bankGetVCAList);
+    _rb_define_method(rb_cBank, "get_bus_count", bankGetBusCount);
+    _rb_define_method(rb_cBank, "get_bus_list", bankGetBusList);
 }

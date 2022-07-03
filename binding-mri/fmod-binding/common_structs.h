@@ -56,5 +56,6 @@
     _rb_define_method(klass, #name "=", type##set##name);
 
 DECL_TYPE(FMOD_GUID);
+DECL_TYPE(FMOD_STUDIO_MEMORY_USAGE);
 
 #endif

@@ -58,7 +58,7 @@
 
 #define FMOD_RESULT_WRAP(val, wrap)                                    \
     FMOD_RESULT_BASE                                                   \
-    if (val || result == FMOD_OK)                                      \
+    if (result == FMOD_OK)                                             \
     {                                                                  \
         VALUE return_val = rb_class_new_instance(0, NULL, rb_c##wrap); \
         setPrivateData(return_val, new wrap(val));                     \
@@ -68,7 +68,7 @@
 
 #define FMOD_RESULT_CONVERT(val, convert)      \
     FMOD_RESULT_BASE                           \
-    if (val || result == FMOD_OK)              \
+    if (result == FMOD_OK)                     \
     {                                          \
         rb_ary_push(return_ary, convert(val)); \
     }                                          \
@@ -81,20 +81,29 @@
 
 #define FMOD_RESULT_VALUE(val)        \
     FMOD_RESULT_BASE                  \
-    if (val || result == FMOD_OK)     \
+    if (result == FMOD_OK)            \
     {                                 \
         rb_ary_push(return_ary, val); \
     }                                 \
     FMOD_RESULT_RET
 
+//! We can delete the val (and want to) since it's always a newly
+//! allocated struct that this is used for
+//! If we don't, and the function did not return ok, we risk a
+//! memory leak
 #define FMOD_RESULT_NO_WRAP(val, klass)                           \
     FMOD_RESULT_BASE                                              \
-    if (val || result == FMOD_OK)                                 \
+    if (result == FMOD_OK)                                        \
     {                                                             \
         VALUE return_val = rb_class_new_instance(0, NULL, klass); \
         setPrivateData(return_val, val);                          \
         rb_ary_push(return_ary, return_val);                      \
     }                                                             \
+    else                                                          \
+    {                                                             \
+        delete val;                                               \
+    }                                                             \
+                                                                  \
     FMOD_RESULT_RET
 
 #define FMOD_RESULT_SIMPLE \
@@ -106,10 +115,11 @@ DEF_FMOD_WRAPPER(Bank, FMOD_STUDIO_BANK);
 //? Define ruby data type for Bank
 DECL_TYPE(Bank);
 
-//? Define wrapper for VCA
 DEF_FMOD_WRAPPER(VCA, FMOD_STUDIO_VCA);
-//? Define ruby data type
 DECL_TYPE(VCA);
+
+DEF_FMOD_WRAPPER(Bus, FMOD_STUDIO_BUS);
+DECL_TYPE(Bus);
 
 // * Modules and classes to be defined under
 extern VALUE rb_mFMOD;
@@ -119,11 +129,16 @@ extern VALUE rb_mFMOD_Studio;
 extern VALUE rb_cBank;
 extern VALUE rb_cGUID;
 extern VALUE rb_cVCA;
+extern VALUE rb_cBus;
+extern VALUE rb_cMemoryUsage;
 
 void bindFmodStudioBank();
 void bindFmodStudioSystem();
 void bindFmodStudioStructs();
 void bindFmodStudioVCA();
+void bindFmodStudioBus();
+
+void bindFmodCoreStructs();
 
 //? These functions are common, so we share them
 //? in the header
@@ -193,6 +208,76 @@ void bindFmodStudioVCA();
         }                                                                    \
                                                                              \
         FMOD_RESULT_CONVERT(path, rb_str_new_cstr);                          \
+    }
+
+#define FMOD_VOLUME_FUNC(func_base, type)                                        \
+    RB_METHOD(fmodGetVolume)                                                     \
+    {                                                                            \
+        RB_UNUSED_PARAM;                                                         \
+        type *b = getPrivateData<type>(self);                                    \
+        float volume;                                                            \
+        float finalvolume;                                                       \
+        FMOD_RESULT result = func_base##_GetVolume(b->p, &volume, &finalvolume); \
+        FMOD_RESULT_BASE;                                                        \
+        if (result == FMOD_OK)                                                   \
+        {                                                                        \
+            rb_ary_push(return_ary, DBL2NUM(volume));                            \
+            rb_ary_push(return_ary, DBL2NUM(finalvolume));                       \
+        }                                                                        \
+        FMOD_RESULT_RET;                                                         \
+    }                                                                            \
+    RB_METHOD(fmodSetVolume)                                                     \
+    {                                                                            \
+        float volume;                                                            \
+        rb_get_args(argc, argv, "f", &volume RB_ARG_END);                        \
+        type *b = getPrivateData<type>(self);                                    \
+        FMOD_RESULT result = func_base##_SetVolume(b->p, volume);                \
+        FMOD_RESULT_SIMPLE;                                                      \
+    }
+
+#define FMOD_PAUSED_FUNC(func_base, type)                          \
+    RB_METHOD(fmodGetPaused)                                       \
+    {                                                              \
+        RB_UNUSED_PARAM;                                           \
+        type *b = getPrivateData<type>(self);                      \
+        int paused;                                                \
+        FMOD_RESULT result = func_base##_GetPaused(b->p, &paused); \
+        FMOD_RESULT_CONVERT(paused, BOOL2RB);                      \
+    }                                                              \
+    RB_METHOD(fmodSetPaused)                                       \
+    {                                                              \
+        bool paused;                                               \
+        rb_get_args(argc, argv, "b", &paused RB_ARG_END);          \
+        type *b = getPrivateData<type>(self);                      \
+        FMOD_RESULT result = func_base##_SetPaused(b->p, paused);  \
+        FMOD_RESULT_SIMPLE;                                        \
+    }
+
+#define FMOD_CPU_USAGE_FUNC(func_base, type)              \
+    RB_METHOD(fmodGetCPUUsage)                            \
+    {                                                     \
+        RB_UNUSED_PARAM;                                  \
+        type *b = getPrivateData<type>(self);             \
+        unsigned int exclusive, inclusive;                \
+        FMOD_RESULT result = func_base##_GetCPUUsage(     \
+            b->p, &exclusive, &inclusive);                \
+        FMOD_RESULT_BASE;                                 \
+        if (result == FMOD_OK)                            \
+        {                                                 \
+            rb_ary_push(return_ary, UINT2NUM(exclusive)); \
+            rb_ary_push(return_ary, UINT2NUM(inclusive)); \
+        }                                                 \
+        FMOD_RESULT_RET;                                  \
+    }
+
+#define FMOD_MEMORY_USAGE_FUNC(func_base, type)                           \
+    RB_METHOD(fmodGetMemoryUsage)                                         \
+    {                                                                     \
+        RB_UNUSED_PARAM;                                                  \
+        type *b = getPrivateData<type>(self);                             \
+        FMOD_STUDIO_MEMORY_USAGE *usage = new FMOD_STUDIO_MEMORY_USAGE(); \
+        FMOD_RESULT result = func_base##_GetMemoryUsage(b->p, usage);     \
+        FMOD_RESULT_NO_WRAP(usage, rb_cMemoryUsage);                      \
     }
 
 #endif

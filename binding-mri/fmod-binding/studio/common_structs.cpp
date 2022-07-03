@@ -2,20 +2,16 @@
 #include "fmod_bindings.h"
 #include <fmod_studio.h>
 
-DEF_TYPE(FMOD_GUID);
-VALUE rb_cGUID = Qnil;
+DEF_TYPE(FMOD_STUDIO_MEMORY_USAGE);
+VALUE rb_cMemoryUsage = Qnil;
 
-DEFINE_NAMED_ATTR_INT(FMOD_GUID, data1, Data1);
-DEFINE_NAMED_ATTR_INT(FMOD_GUID, data2, Data2);
-DEFINE_NAMED_ATTR_INT(FMOD_GUID, data3, Data3);
-DEFINE_NAMED_ATTR_STR(FMOD_GUID, data4, Data4, 8);
+DEFINE_ATTR_INT(FMOD_STUDIO_MEMORY_USAGE, exclusive);
+DEFINE_ATTR_INT(FMOD_STUDIO_MEMORY_USAGE, inclusive);
+DEFINE_ATTR_INT(FMOD_STUDIO_MEMORY_USAGE, sampledata);
 
-void bindFmodStudioStructs()
-{
-    rb_cGUID = rb_define_class_under(rb_mFMOD, "GUID", rb_cObject);
-    rb_define_alloc_func(rb_cGUID, classAllocate<&FMOD_GUIDType>);
-    EXPOSE_ATTRIBUTE(rb_cGUID, FMOD_GUID, data1);
-    EXPOSE_ATTRIBUTE(rb_cGUID, FMOD_GUID, data2);
-    EXPOSE_ATTRIBUTE(rb_cGUID, FMOD_GUID, data3);
-    EXPOSE_ATTRIBUTE(rb_cGUID, FMOD_GUID, data4);
+void bindFmodStudioStructs() {
+    rb_cMemoryUsage = rb_define_class_under(rb_mFMOD_Studio, "MemoryUsage", rb_cObject);
+    EXPOSE_ATTRIBUTE(rb_cMemoryUsage, FMOD_STUDIO_MEMORY_USAGE, exclusive);
+    EXPOSE_ATTRIBUTE(rb_cMemoryUsage, FMOD_STUDIO_MEMORY_USAGE, inclusive);
+    EXPOSE_ATTRIBUTE(rb_cMemoryUsage, FMOD_STUDIO_MEMORY_USAGE, sampledata);
 }

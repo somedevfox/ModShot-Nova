@@ -21,14 +21,26 @@ res2, strbank = FMOD::Studio::System.load_bank_file("Master.strings.bank", 0)
 puts bank.is_valid.to_s
 puts bank.get_path.to_s
 
-puts strbank.get_vca_count.to_s
 result, list = bank.get_vca_list
-puts list
+puts list.to_s
 list.each_with_index do |v, i|
   puts "index: #{i} vca: #{v} valid: #{v.is_valid}"
   puts v.get_id.to_s
   puts v.get_path.to_s
   puts v.get_volume.to_s
+end
+
+result, list2 = bank.get_bus_list
+puts list2.to_s
+list2.each_with_index do |b, i|
+  puts "index: #{i} bus: #{b} valid: #{b.is_valid}"
+  puts b.get_id.to_s
+  puts b.get_path.to_s
+  puts b.get_volume.to_s
+  puts b.get_paused.to_s
+  puts b.get_port_index.to_s
+  puts b.get_cpu_usage.to_s
+  puts b.get_memory_usage.to_s
 end
 
 begin
