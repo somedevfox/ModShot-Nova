@@ -20,69 +20,18 @@ DEF_TYPE(Bank);
 */
 Bank::~Bank()
 {
-    Debug() << "Warning: auto unloading bank (garbage collected from ruby?)";
+    Debug() << "Warning: auto unloading bank (garbage collected?)";
     Debug() << "Bank unloading result:" << FMOD_Studio_Bank_Unload(p);
     /* free(p) */
 }
 
 VALUE rb_cBank = Qnil;
 
-RB_METHOD(bankIsValid)
-{
-    RB_UNUSED_PARAM;
+FMOD_VALID_FUNC(FMOD_Studio_Bank, Bank);
 
-    //? Get wrapper
-    Bank *b = getPrivateData<Bank>(self);
+FMOD_ID_FUNC(FMOD_Studio_Bank, Bank);
 
-    //? Get result of IsValid (an int for some reason?) and convert it to a ruby bool
-    //? BOOL2RB is defined in fmod_bindings.h since ruby doesn't ship it
-    return BOOL2RB(FMOD_Studio_Bank_IsValid(b->p));
-}
-
-RB_METHOD(bankGetID)
-{
-    RB_UNUSED_PARAM;
-
-    //? Get wrapper
-    Bank *b = getPrivateData<Bank>(self);
-    //? Create FMOD_GUID struct
-    FMOD_GUID *guid = new FMOD_GUID();
-
-    //? Get the GUID
-    FMOD_RESULT result = FMOD_Studio_Bank_GetID(b->p, guid);
-
-    //? Return the result and guid
-    FMOD_RESULT_NO_WRAP(guid, rb_cGUID);
-}
-
-RB_METHOD(bankGetPath)
-{
-    RB_UNUSED_PARAM;
-
-    //? Get wrapper
-    Bank *b = getPrivateData<Bank>(self);
-    int retrieved;
-    char *path = NULL;
-    //? Get the size of the path, this function modifies retrieved
-    FMOD_RESULT result = FMOD_Studio_Bank_GetPath(b->p, NULL, 0, &retrieved);
-    //? If function was successful
-    if (result == FMOD_OK)
-    {
-        //? Allocate memory for the string based on the size of the path
-        //? We got from the first function call
-        path = new char[retrieved];
-        /*
-        ! This could be a memory leak if ruby doesn't clean
-        ! the string up
-        */
-
-        //? Finally set the path
-        result = FMOD_Studio_Bank_GetPath(b->p, path, retrieved, &retrieved);
-    }
-
-    //? Return the path
-    FMOD_RESULT_CONVERT(path, rb_str_new_cstr);
-}
+FMOD_PATH_FUNC(FMOD_Studio_Bank, Bank);
 
 RB_METHOD(bankUnload)
 {
@@ -171,7 +120,8 @@ RB_METHOD(bankGetStringCount)
 }
 
 //! Oh boy
-RB_METHOD(bankGetStringInfo) {
+RB_METHOD(bankGetStringInfo)
+{
     //? Get the index we are using
     int index;
     rb_get_args(argc, argv, "i", &index RB_ARG_END);
@@ -182,15 +132,15 @@ RB_METHOD(bankGetStringInfo) {
     //? so we don't allocate memory for them if the function is
     //? unsuccessful
     int retrieved;
-    char* path = NULL;
+    char *path = NULL;
     FMOD_GUID *guid = NULL;
 
     FMOD_RESULT result = FMOD_Studio_Bank_GetStringInfo(
-        b->p, index, NULL, NULL, 0, &retrieved
-    );
+        b->p, index, NULL, NULL, 0, &retrieved);
 
     //? If function was successful
-    if (result == FMOD_OK) {
+    if (result == FMOD_OK)
+    {
         //? Allocate memory for the string like in GetPath
         path = new char[retrieved];
         //? Create the GUID
@@ -199,20 +149,21 @@ RB_METHOD(bankGetStringInfo) {
         //? Finally call the function for real
         //? Oh boy that was horrible
         result = FMOD_Studio_Bank_GetStringInfo(
-            b->p, index, guid, path, retrieved, &retrieved
-        );
+            b->p, index, guid, path, retrieved, &retrieved);
     }
 
     //? Not many functions need more than 1 return value
     //? and the functions that do are specialized, so no
     //? fancy macro here unfortunately
     FMOD_RESULT_BASE;
-    if (guid) {
+    if (guid)
+    {
         VALUE return_val = rb_class_new_instance(0, NULL, rb_cGUID);
         setPrivateData(return_val, guid);
         rb_ary_push(return_ary, return_val);
     }
-    if (path) {
+    if (path)
+    {
         rb_ary_push(return_ary, rb_str_new_cstr(path));
     }
     //? Hell is over!
@@ -221,14 +172,74 @@ RB_METHOD(bankGetStringInfo) {
 
 FMOD_USERDATA_FUNC(FMOD_Studio_Bank, Bank);
 
+RB_METHOD(bankGetVCACount)
+{
+    RB_UNUSED_PARAM;
+    //? Get wrapper
+    Bank *b = getPrivateData<Bank>(self);
+    int count;
+
+    //? Call function
+    FMOD_RESULT result = FMOD_Studio_Bank_GetVCACount(b->p, &count);
+
+    //? Return result & value
+    FMOD_RESULT_CONVERT(count, INT2NUM);
+}
+
+//! HERE BE DRAGONS
+RB_METHOD(bankGetVCAList)
+{
+    RB_UNUSED_PARAM;
+
+    //? Get wrapper
+    Bank *b = getPrivateData<Bank>(self);
+
+    //? Find size of array we need (because we need to allocate memory)
+    //? I absolutely hate doing this kind of process but y'know what
+    //? whatever it works
+    int count;
+    FMOD_STUDIO_VCA **array = NULL;
+    FMOD_RESULT result = FMOD_Studio_Bank_GetVCACount(b->p, &count);
+
+    if (result == FMOD_OK)
+    {
+        //? Allocate array (god i hate this)
+        array = new FMOD_STUDIO_VCA *[count];
+
+        result = FMOD_Studio_Bank_GetVCAList(
+            b->p, array, count, NULL
+        );
+    }
+
+    FMOD_RESULT_BASE;
+    if (array && result == FMOD_OK) {
+        //? Convert the vca array to a ruby array, painfully
+        VALUE vca_ary = rb_ary_new();
+        //? Iterate over all elements in the array
+        //? May potentially crash if the amount of elements
+        //? is different from count
+        for (int i = 0; i < count; i++) {
+            //? Convert VCA and add it to the array
+            VALUE ele = rb_class_new_instance(0, NULL, rb_cVCA);
+            setPrivateData(ele, new VCA(array[i]));
+            rb_ary_push(vca_ary, ele);
+        }
+        //? Add the result array and we are done!
+        //? This likely memory leaks I think, but we'll see
+        rb_ary_push(return_ary, vca_ary);
+        delete array; //? This shouldn't free the elements?
+    }
+    FMOD_RESULT_RET;
+}
+
 void bindFmodStudioBank()
 {
     rb_cBank = rb_define_class_under(rb_mFMOD_Studio, "Bank", rb_cObject);
     rb_define_alloc_func(rb_cBank, classAllocate<&BankType>);
 
-    _rb_define_method(rb_cBank, "is_valid", bankIsValid);
-    _rb_define_method(rb_cBank, "get_id", bankGetID);
-    _rb_define_method(rb_cBank, "get_path", bankGetPath);
+    _rb_define_method(rb_cBank, "is_valid", fmodIsValid);
+    _rb_define_method(rb_cBank, "get_id", fmodGetID);
+    _rb_define_method(rb_cBank, "get_path", fmodGetPath);
     _rb_define_method(rb_cBank, "unload", bankUnload);
     _rb_define_method(rb_cBank, "load_sample_data", bankLoadSampleData);
     _rb_define_method(rb_cBank, "unload_sample_data", bankUnloadSampleData);
@@ -238,4 +249,6 @@ void bindFmodStudioBank()
     _rb_define_method(rb_cBank, "get_string_info", bankGetStringInfo);
     _rb_define_method(rb_cBank, "get_user_data", fmodGetUserData);
     _rb_define_method(rb_cBank, "set_user_data", fmodSetUserData);
+    _rb_define_method(rb_cBank, "get_vca_count", bankGetVCACount);
+    _rb_define_method(rb_cBank, "get_vca_list", bankGetVCAList);
 }

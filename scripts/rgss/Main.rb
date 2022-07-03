@@ -19,15 +19,17 @@ end
 result, bank = FMOD::Studio::System.load_bank_file("Master.bank", FMOD::Studio::LoadBankFlags::NONBLOCKING)
 res2, strbank = FMOD::Studio::System.load_bank_file("Master.strings.bank", 0)
 puts bank.is_valid.to_s
-puts bank.get_loading_state.to_s
 puts bank.get_path.to_s
-#strbank.get_string_count[1].times do |i|
-#  puts strbank.get_string_info(i).to_s
-#end
 
-puts bank.get_user_data
-puts bank.set_user_data(Game_Map.new)
-puts bank.get_user_data.inspect
+puts strbank.get_vca_count.to_s
+result, list = bank.get_vca_list
+puts list
+list.each_with_index do |v, i|
+  puts "index: #{i} vca: #{v} valid: #{v.is_valid}"
+  puts v.get_id.to_s
+  puts v.get_path.to_s
+  puts v.get_volume.to_s
+end
 
 begin
   $console = Graphics.fullscreen

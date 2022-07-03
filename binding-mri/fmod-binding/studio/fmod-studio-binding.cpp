@@ -15,4 +15,5 @@ void fmodStudioBindingInit()
     bindFmodStudioSystem();
     bindFmodStudioStructs();
     bindFmodStudioBank();
+    bindFmodStudioVCA();
 }

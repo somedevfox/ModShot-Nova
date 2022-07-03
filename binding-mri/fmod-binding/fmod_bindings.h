@@ -106,6 +106,11 @@ DEF_FMOD_WRAPPER(Bank, FMOD_STUDIO_BANK);
 //? Define ruby data type for Bank
 DECL_TYPE(Bank);
 
+//? Define wrapper for VCA
+DEF_FMOD_WRAPPER(VCA, FMOD_STUDIO_VCA);
+//? Define ruby data type
+DECL_TYPE(VCA);
+
 // * Modules and classes to be defined under
 extern VALUE rb_mFMOD;
 extern VALUE rb_mFMOD_Core;
@@ -113,10 +118,12 @@ extern VALUE rb_mFMOD_Studio;
 
 extern VALUE rb_cBank;
 extern VALUE rb_cGUID;
+extern VALUE rb_cVCA;
 
 void bindFmodStudioBank();
 void bindFmodStudioSystem();
 void bindFmodStudioStructs();
+void bindFmodStudioVCA();
 
 //? These functions are common, so we share them
 //? in the header
@@ -151,6 +158,41 @@ void bindFmodStudioStructs();
             b->p, (void *)arg);                             \
                                                             \
         FMOD_RESULT_SIMPLE;                                 \
+    }
+
+#define FMOD_VALID_FUNC(func_base, type)           \
+    RB_METHOD(fmodIsValid)                         \
+    {                                              \
+        RB_UNUSED_PARAM;                           \
+        type *b = getPrivateData<type>(self);      \
+        return BOOL2RB(func_base##_IsValid(b->p)); \
+    }
+
+#define FMOD_ID_FUNC(func_base, type)                       \
+    RB_METHOD(fmodGetID)                                    \
+    {                                                       \
+        RB_UNUSED_PARAM;                                    \
+        type *b = getPrivateData<type>(self);               \
+        FMOD_GUID *guid = new FMOD_GUID();                  \
+        FMOD_RESULT result = func_base##_GetID(b->p, guid); \
+        FMOD_RESULT_NO_WRAP(guid, rb_cGUID);                \
+    }
+
+#define FMOD_PATH_FUNC(func_base, type)                                      \
+    RB_METHOD(fmodGetPath)                                                   \
+    {                                                                        \
+        RB_UNUSED_PARAM;                                                     \
+        type *b = getPrivateData<type>(self);                                \
+        int retrieved;                                                       \
+        char *path = NULL;                                                   \
+        FMOD_RESULT result = func_base##_GetPath(b->p, NULL, 0, &retrieved); \
+        if (result == FMOD_OK)                                               \
+        {                                                                    \
+            path = new char[retrieved];                                      \
+            result = func_base##_GetPath(b->p, path, retrieved, &retrieved); \
+        }                                                                    \
+                                                                             \
+        FMOD_RESULT_CONVERT(path, rb_str_new_cstr);                          \
     }
 
 #endif
