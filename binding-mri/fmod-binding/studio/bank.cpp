@@ -280,6 +280,53 @@ RB_METHOD(bankGetBusList)
     FMOD_RESULT_RET;
 }
 
+RB_METHOD(bankGetEventCount)
+{
+    RB_UNUSED_PARAM;
+    Bank *b = getPrivateData<Bank>(self);
+    int count;
+
+    FMOD_RESULT result = FMOD_Studio_Bank_GetEventCount(b->p, &count);
+
+    FMOD_RESULT_CONVERT(count, INT2NUM);
+}
+
+RB_METHOD(bankGetEventList)
+{
+    RB_UNUSED_PARAM;
+
+    Bank *b = getPrivateData<Bank>(self);
+
+    int count;
+    FMOD_STUDIO_EVENTDESCRIPTION **array = NULL;
+    FMOD_RESULT result = FMOD_Studio_Bank_GetEventCount(b->p, &count);
+
+    if (result == FMOD_OK)
+    {
+        array = new FMOD_STUDIO_EVENTDESCRIPTION *[count];
+
+        result = FMOD_Studio_Bank_GetEventList(
+            b->p, array, count, NULL);
+    }
+
+    FMOD_RESULT_BASE;
+    if (array && result == FMOD_OK)
+    {
+        VALUE bus_ary = rb_ary_new();
+
+        for (int i = 0; i < count; i++)
+        {
+            VALUE ele = rb_class_new_instance(0, NULL, rb_cEventDescription);
+            setPrivateData(ele, new EventDescription(array[i]));
+            rb_ary_push(bus_ary, ele);
+        }
+
+        rb_ary_push(return_ary, bus_ary);
+        delete array;
+    }
+    FMOD_RESULT_RET;
+}
+
 void bindFmodStudioBank()
 {
     rb_cBank = rb_define_class_under(rb_mFMOD_Studio, "Bank", rb_cObject);
@@ -301,4 +348,6 @@ void bindFmodStudioBank()
     _rb_define_method(rb_cBank, "get_vca_list", bankGetVCAList);
     _rb_define_method(rb_cBank, "get_bus_count", bankGetBusCount);
     _rb_define_method(rb_cBank, "get_bus_list", bankGetBusList);
+    _rb_define_method(rb_cBank, "get_event_count", bankGetEventCount);
+    _rb_define_method(rb_cBank, "get_event_list", bankGetEventList);
 }

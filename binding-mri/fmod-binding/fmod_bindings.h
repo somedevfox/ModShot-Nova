@@ -121,22 +121,29 @@ DECL_TYPE(VCA);
 DEF_FMOD_WRAPPER(Bus, FMOD_STUDIO_BUS);
 DECL_TYPE(Bus);
 
+DEF_FMOD_WRAPPER(EventDescription, FMOD_STUDIO_EVENTDESCRIPTION);
+DECL_TYPE(EventDescription);
+
 // * Modules and classes to be defined under
 extern VALUE rb_mFMOD;
 extern VALUE rb_mFMOD_Core;
 extern VALUE rb_mFMOD_Studio;
+extern VALUE rb_cGUID;
 
 extern VALUE rb_cBank;
-extern VALUE rb_cGUID;
 extern VALUE rb_cVCA;
 extern VALUE rb_cBus;
 extern VALUE rb_cMemoryUsage;
+extern VALUE rb_cEventDescription;
+extern VALUE rb_cParameterID;
+extern VALUE rb_cParameterDescription;
 
 void bindFmodStudioBank();
 void bindFmodStudioSystem();
 void bindFmodStudioStructs();
 void bindFmodStudioVCA();
 void bindFmodStudioBus();
+void bindFmodEventdescription();
 
 void bindFmodCoreStructs();
 

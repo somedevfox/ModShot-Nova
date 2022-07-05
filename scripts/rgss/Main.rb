@@ -43,6 +43,14 @@ list2.each_with_index do |b, i|
   puts b.get_memory_usage.to_s
 end
 
+result, list3 = bank.get_event_list
+puts list3.to_s
+list3.each_with_index do |b, i|
+  puts "index: #{i} bus: #{b} valid: #{b.is_valid}"
+  puts b.get_id.to_s
+  puts b.get_path.to_s
+end
+
 begin
   $console = Graphics.fullscreen
   Graphics.frame_rate = 60
