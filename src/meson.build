@@ -160,10 +160,6 @@ endif
 
 if fmod
 	global_args += '-DUSE_FMOD'
-	global_include_dirs += include_directories('fmod/headers')
-	global_sources += files(
-		'fmod/source/audio.cpp'
-	)
 else
 	global_include_dirs += include_directories('al/headers')
 	global_sources += files(

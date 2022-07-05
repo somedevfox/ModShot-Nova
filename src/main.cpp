@@ -423,11 +423,11 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
-	result = FMOD_Studio_System_Initialize(system, conf.maxFmodChannels, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0);
-	if (result != FMOD_OK) {
-		showInitError(std::string("Error initializing FMOD system: ") + FMOD_ErrorString(result));
-		return 0;
-	}
+	//result = FMOD_Studio_System_Initialize(system, conf.maxFmodChannels, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0);
+	//if (result != FMOD_OK) {
+	//	showInitError(std::string("Error initializing FMOD system: ") + FMOD_ErrorString(result));
+	//	return 0;
+	//}
 	#endif
 
 	SDL_DisplayMode mode;

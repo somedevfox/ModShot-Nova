@@ -28,7 +28,9 @@
 #include "sdl-util.h"
 #include "debugwriter.h"
 #include "graphics.h"
+#ifndef USE_FMOD
 #include "audio.h"
+#endif
 #include "boost-hash.h"
 #include "version.h"
 #include "oneshot.h"
@@ -313,7 +315,9 @@ static VALUE rgssMainRescue(VALUE arg, VALUE exc)
 static void processReset()
 {
 	shState->graphics().reset();
+	#ifndef USE_FMOD
 	shState->audio().reset();
+	#endif
 
 	shState->rtData().rqReset.clear();
 	shState->graphics().repaintWait(shState->rtData().rqResetFinish,

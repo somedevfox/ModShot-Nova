@@ -94,7 +94,7 @@ struct Config
 
 	bool winConsole;
 
-	int maxFmodChannels;
+	//int maxFmodChannels;
 
 	std::string iconPath;
 

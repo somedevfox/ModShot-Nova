@@ -16,6 +16,9 @@ module Audio
   end
 end
 
+puts FMOD::Studio::System.initialize(512, 0, 0)
+puts FMOD::Studio::System.is_valid
+
 result, bank = FMOD::Studio::System.load_bank_file("Master.bank", FMOD::Studio::LoadBankFlags::NONBLOCKING)
 res2, strbank = FMOD::Studio::System.load_bank_file("Master.strings.bank", 0)
 puts bank.is_valid.to_s

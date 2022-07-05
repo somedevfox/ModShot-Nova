@@ -34,7 +34,7 @@
         RB_UNUSED_PARAM;                                  \
         type *p = getPrivateData<type>(self);             \
         VALUE ret = rb_class_new_instance(0, NULL, wrap); \
-        setPrivateData(ret, &p->path);                     \
+        setPrivateData(ret, &p->path);                    \
         return ret;                                       \
     }
 
@@ -51,7 +51,7 @@
 #define DEFINE_ATTR_INT(type, name) DEFINE_NAMED_ATTR_INT(type, name, name)
 #define DEFINE_ATTR_FLOAT(type, name) DEFINE_NAMED_ATTR_FLOAT(type, name, name)
 #define DEFINE_ATTR_STR(type, name) DEFINE_NAMED_ATTR_STR(type, name, name)
-#define DEFINE_ATTR_UNINT(type, name) DEFINE_NAMED_ATTR_UINT(type, name, name)
+#define DEFINE_ATTR_UINT(type, name) DEFINE_NAMED_ATTR_UINT(type, name, name)
 #define DEFINE_ATTR_NOWRAP(type, name, wrap) \
     DEFINE_NAMED_ATTR_NOWRAP(type, name, name, wrap)
 #define DEFINE_ATTR_WRAP(type, name, wrap, wrapklass) \
@@ -63,5 +63,6 @@
 DECL_TYPE(FMOD_GUID);
 DECL_TYPE(FMOD_STUDIO_MEMORY_USAGE);
 DECL_TYPE(FMOD_STUDIO_PARAMETER_DESCRIPTION);
+DECL_TYPE(FMOD_STUDIO_PARAMETER_ID);
 
 #endif

@@ -105,8 +105,8 @@ void Config::read(int argc, char *argv[])
 	PO_DESC(yjitCallThreshold, int, 10) \
 	PO_DESC(yjitMaxVersions, int, 4) \
 	PO_DESC(yjitGreedyVersioning, bool, false) \
-	PO_DESC(winConsole, bool, false) \
-	PO_DESC(maxFmodChannels, int, 512)
+	PO_DESC(winConsole, bool, false)
+	//PO_DESC(maxFmodChannels, int, 512)
 
 // Not gonna take your shit boost
 #define GUARD_ALL( exp ) try { exp } catch(...) {}
