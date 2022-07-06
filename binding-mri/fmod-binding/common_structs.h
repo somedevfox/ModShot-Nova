@@ -60,9 +60,4 @@
 #define EXPOSE_ATTRIBUTE(klass, type, name) \
     _rb_define_method(klass, #name, type##get##name);
 
-DECL_TYPE(FMOD_GUID);
-DECL_TYPE(FMOD_STUDIO_MEMORY_USAGE);
-DECL_TYPE(FMOD_STUDIO_PARAMETER_DESCRIPTION);
-DECL_TYPE(FMOD_STUDIO_PARAMETER_ID);
-
 #endif
