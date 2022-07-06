@@ -4,16 +4,18 @@
 
 VALUE rb_cGUID = Qnil;
 
-DEFINE_NAMED_ATTR_INT(FMOD_GUID, data1, Data1);
-DEFINE_NAMED_ATTR_INT(FMOD_GUID, data2, Data2);
-DEFINE_NAMED_ATTR_INT(FMOD_GUID, data3, Data3);
-DEFINE_NAMED_ATTR_STR(FMOD_GUID, data4, Data4);
+DECLARE_FMOD2RB(FMOD_GUID, rb_cGUID);
+FMOD2RB_NAME(data1, Data1, UINT2NUM);
+FMOD2RB_NAME(data2, Data2, UINT2NUM);
+FMOD2RB_NAME(data3, Data3, UINT2NUM);
+FMOD2RB_CAST(data4, Data4, char*, rb_str_new_cstr);
+FMOD2RB_END;
 
 void bindFmodCoreStructs()
 {
     rb_cGUID = rb_define_class_under(rb_mFMOD_Core, "GUID", rb_cObject);
-    EXPOSE_ATTRIBUTE(rb_cGUID, FMOD_GUID, data1);
-    EXPOSE_ATTRIBUTE(rb_cGUID, FMOD_GUID, data2);
-    EXPOSE_ATTRIBUTE(rb_cGUID, FMOD_GUID, data3);
-    EXPOSE_ATTRIBUTE(rb_cGUID, FMOD_GUID, data4);
+    ATTR(rb_cGUID, data1);
+    ATTR(rb_cGUID, data2);
+    ATTR(rb_cGUID, data3);
+    ATTR(rb_cGUID, data4);
 }

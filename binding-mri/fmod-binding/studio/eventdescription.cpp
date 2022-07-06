@@ -41,7 +41,7 @@ RB_METHOD(descriptionGetParameterIndex) {
         b->p, index, description
     );
 
-    FMOD_RESULT_NO_WRAP(description, rb_cParameterDescription);
+    FMOD_RESULT_NO_WRAP(description, FMOD_STUDIO_PARAMETER_DESCRIPTION);
 }
 
 void bindFmodEventdescription()

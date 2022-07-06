@@ -2,6 +2,7 @@
 #define FMOD_BINDINGS_H
 
 #include "binding-util.h"
+#include "common_structs.h"
 #include <fmod_studio.h>
 
 //* Bool to ruby converter
@@ -91,19 +92,18 @@
 //! allocated struct that this is used for
 //! If we don't, and the function did not return ok, we risk a
 //! memory leak
-#define FMOD_RESULT_NO_WRAP(val, klass)                           \
-    FMOD_RESULT_BASE                                              \
-    if (result == FMOD_OK)                                        \
-    {                                                             \
-        VALUE return_val = rb_class_new_instance(0, NULL, klass); \
-        setPrivateData(return_val, val);                          \
-        rb_ary_push(return_ary, return_val);                      \
-    }                                                             \
-    else                                                          \
-    {                                                             \
-        delete val;                                               \
-    }                                                             \
-                                                                  \
+#define FMOD_RESULT_NO_WRAP(val, klass)           \
+    FMOD_RESULT_BASE                              \
+    if (result == FMOD_OK)                        \
+    {                                             \
+        VALUE return_val = fmod##klass##2rb(val); \
+        rb_ary_push(return_ary, return_val);      \
+    }                                             \
+    else                                          \
+    {                                             \
+        delete val;                               \
+    }                                             \
+                                                  \
     FMOD_RESULT_RET
 
 #define FMOD_RESULT_SIMPLE \
@@ -129,14 +129,18 @@ extern VALUE rb_mFMOD;
 extern VALUE rb_mFMOD_Core;
 extern VALUE rb_mFMOD_Studio;
 extern VALUE rb_cGUID;
+DEFINE_CONVERT_FUNC(FMOD_GUID);
 
 extern VALUE rb_cBank;
 extern VALUE rb_cVCA;
 extern VALUE rb_cBus;
 extern VALUE rb_cMemoryUsage;
+DEFINE_CONVERT_FUNC(FMOD_STUDIO_MEMORY_USAGE);
 extern VALUE rb_cEventDescription;
 extern VALUE rb_cParameterID;
+DEFINE_CONVERT_FUNC(FMOD_STUDIO_PARAMETER_ID);
 extern VALUE rb_cParameterDescription;
+DEFINE_CONVERT_FUNC(FMOD_STUDIO_PARAMETER_DESCRIPTION);
 
 void bindFmodStudioBank();
 void bindFmodStudioSystem();
@@ -146,6 +150,7 @@ void bindFmodStudioBus();
 void bindFmodEventdescription();
 
 void bindFmodCoreStructs();
+
 
 //? These functions are common, so we share them
 //? in the header
@@ -197,7 +202,7 @@ void bindFmodCoreStructs();
         type *b = getPrivateData<type>(self);               \
         FMOD_GUID *guid = new FMOD_GUID();                  \
         FMOD_RESULT result = func_base##_GetID(b->p, guid); \
-        FMOD_RESULT_NO_WRAP(guid, rb_cGUID);                \
+        FMOD_RESULT_NO_WRAP(guid, FMOD_GUID);               \
     }
 
 #define FMOD_PATH_FUNC(func_base, type)                                      \
@@ -284,7 +289,7 @@ void bindFmodCoreStructs();
         type *b = getPrivateData<type>(self);                             \
         FMOD_STUDIO_MEMORY_USAGE *usage = new FMOD_STUDIO_MEMORY_USAGE(); \
         FMOD_RESULT result = func_base##_GetMemoryUsage(b->p, usage);     \
-        FMOD_RESULT_NO_WRAP(usage, rb_cMemoryUsage);                      \
+        FMOD_RESULT_NO_WRAP(usage, FMOD_STUDIO_MEMORY_USAGE);             \
     }
 
 #endif

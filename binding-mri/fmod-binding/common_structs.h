@@ -3,61 +3,52 @@
 
 #include "binding-util.h"
 
-#define DEFINE_NAMED_ATTR(type, name, path, convert) \
-    RB_METHOD(type##get##name)                       \
-    {                                                \
-        RB_UNUSED_PARAM;                             \
-        type *p = getPrivateData<type>(self);        \
-        return convert(p->path);                     \
+#define DEFINE_CONVERT_FUNC(type)                      \
+    VALUE fmod##type##2rb(type * p, bool free = true); \
+    type *rb2fmod##type(VALUE self);
+
+#define DECLARE_FMOD2RB(type, klass)           \
+    VALUE fmod##type##2rb(type * p, bool free) \
+    {                                          \
+        VALUE self = rb_class_new_instance(0, NULL, klass);
+
+#define FMOD2RB(path, convert) \
+    rb_iv_set(self, "@" #path, convert(p->path));
+
+#define FMOD2RB_NAME(name, path, convert) \
+    rb_iv_set(self, "@" #name, convert(p->path));
+
+#define FMOD2RB_CAST(name, path, cast, convert) \
+    rb_iv_set(self, "@" #name, convert((cast)p->path));
+
+#define FMOD2RB_STRUCT(path, type) \
+    rb_iv_set(self, "@" #path, fmod##type##2rb(&p->path, false));
+
+#define FMOD2RB_END \
+    if (free)       \
+        delete p;   \
+    return self;    \
     }
 
-#define DEFINE_NAMED_ATTR_INT(type, name, path) \
-    DEFINE_NAMED_ATTR(type, name, path, INT2NUM)
+#define DECLARE_RB2FMOD(type, klass) \
+    type *rb2fmod##type(VALUE self)  \
+    {                                \
+        type *p = new type();
 
-#define DEFINE_NAMED_ATTR_FLOAT(type, name, path) \
-    DEFINE_NAMED_ATTR(type, name, path, DBL2NUM)
+#define RB2FMOD(path, convert) \
+    p->path = convert(rb_iv_get(self, "@" #path));
 
-#define DEFINE_NAMED_ATTR_UINT(type, name, path) \
-    DEFINE_NAMED_ATTR(type, name, path, UINT2NUM)
+#define RB2FMOD_NAME(name, path, convert) \
+    p->path = convert(rb_iv_get(self, "@" #name));
 
-#define DEFINE_NAMED_ATTR_STR(type, name, path)  \
-    RB_METHOD(type##get##name)                   \
-    {                                            \
-        RB_UNUSED_PARAM;                         \
-        type *p = getPrivateData<type>(self);    \
-        return rb_str_new_cstr((char *)p->path); \
+#define RB2FMOD_CAST(name, path, cast, convert) \
+    p->path = (cast)convert(rb_iv_get(self, "@" #name));
+
+#define RB2FMOD_END \
+    return p;       \
     }
 
-#define DEFINE_NAMED_ATTR_NOWRAP(type, name, path, wrap)  \
-    RB_METHOD(type##get##name)                            \
-    {                                                     \
-        RB_UNUSED_PARAM;                                  \
-        type *p = getPrivateData<type>(self);             \
-        VALUE ret = rb_class_new_instance(0, NULL, wrap); \
-        setPrivateData(ret, &p->path);                    \
-        return ret;                                       \
-    }
-
-#define DEFINE_NAMED_ATTR_WRAP(type, name, path, wrap, wrapklass) \
-    RB_METHOD(type##get##name)                                    \
-    {                                                             \
-        RB_UNUSED_PARAM;                                          \
-        type *p = getPrivateData<type>(self);                     \
-        VALUE ret = rb_class_new_instance(0, NULL, wrapp);        \
-        setPrivateData(ret, new wrapklass(p->path));              \
-        return ret;                                               \
-    }
-
-#define DEFINE_ATTR_INT(type, name) DEFINE_NAMED_ATTR_INT(type, name, name)
-#define DEFINE_ATTR_FLOAT(type, name) DEFINE_NAMED_ATTR_FLOAT(type, name, name)
-#define DEFINE_ATTR_STR(type, name) DEFINE_NAMED_ATTR_STR(type, name, name)
-#define DEFINE_ATTR_UINT(type, name) DEFINE_NAMED_ATTR_UINT(type, name, name)
-#define DEFINE_ATTR_NOWRAP(type, name, wrap) \
-    DEFINE_NAMED_ATTR_NOWRAP(type, name, name, wrap)
-#define DEFINE_ATTR_WRAP(type, name, wrap, wrapklass) \
-    DEFINE_NAMED_ATTR_WRAP(type, name, name, wrap, wrapklass)
-
-#define EXPOSE_ATTRIBUTE(klass, type, name) \
-    _rb_define_method(klass, #name, type##get##name);
+#define ATTR(klass, name) \
+    rb_define_attr(klass, #name, 1, 1);
 
 #endif
