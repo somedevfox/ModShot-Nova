@@ -47,6 +47,27 @@ ModShot should handle everything from there, it's up to you to follow the FMOD l
 FMOD bindings also do not supply the `Audio` module. You may create wrapper functions for that if you wish.
 AL Effect bndings are not supplied as well for obvious reasons.
 
+Functions will always return an array of values (usually two) in the order of `[result, values...]`.
+This means you can do `result, value = FMOD.some_func()`, which is pretty neat, right? If a result is not `FMOD_OK` (0) there will be no return value. Keep that in mind!
+
+The FMOD bindings won't hold your hands either- You will need to clean up after yourself.
+Because of the way the bindings work as well calling the same function twice will **NOT** return the "same" object. Fundamentally, it is the same object, as the C++ side object is the same, but it is a brand new object as far as ruby is concerned.
+
+Because of this behavior, you can quite easily cause a memory leak by repeatedly storing an object returned in an array somewhere constantly loaded such that ruby will not garbage collect it.
+i.e
+```rb
+array = []
+100000.times do
+    array << bank.get_event_list # Bad will memory leak!
+end
+```
+So, be mindful of what you write! Luckily instances of objects from these bindings are very small so it's not a big deal if your code isn't perfect, but **PLEASE** do be mindful of this! RMXP already has a similar problem with Bitmaps, so if you've dealt with them you should know what to do.
+There is an `==` operator provided (TODO) that will check if an object is the same for you as well. You can usually assign a value `nil` to get it garbage collected.
+
+The bindings should generally line up with what's documented in the latest FMOD docs- although things like `FMOD_Studio_System_Create` are hidden away under `FMOD::Studio::System.new` instead.
+
+I hope that's enough info to get you started! There will be some direct conversions of FMOD examples in the `scripts` folder when I get to it. (TODO)
+
 ### Options
 
 ```
@@ -55,6 +76,7 @@ RUBY_VER && -Dmri_version (default 3.1) sets the ruby version.
 --build-type (default Release) sets the build type.
 -Dbuild_static (default true) sets the build to be static. (True is faster, but with longer startup times.)
 -Dfmod (default false) toggles FMOD instead of OpenAL.
+-Dauto_clean_fmod (default false) toggles auto releasing SOME FMOD objects when garbage collected.
 ```
 
 ## Building on Windows
