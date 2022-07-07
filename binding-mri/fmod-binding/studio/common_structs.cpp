@@ -27,6 +27,35 @@ FMOD2RB(data1, UINT2NUM);
 FMOD2RB(data2, UINT2NUM);
 FMOD2RB_END;
 
+DECLARE_RB2FMOD(FMOD_STUDIO_PARAMETER_ID, rb_cParameterID);
+RB2FMOD(data1, NUM2UINT);
+RB2FMOD(data2, NUM2UINT);
+RB2FMOD_END;
+
+VALUE rb_cUserProperty = Qnil;
+DECLARE_FMOD2RB(FMOD_STUDIO_USER_PROPERTY, rb_cUserProperty);
+FMOD2RB(name, rb_str_new_cstr);
+FMOD2RB(type, INT2NUM);
+switch (p->type)
+{
+    case FMOD_STUDIO_USER_PROPERTY_TYPE_INTEGER:
+        rb_iv_set(self, "@value", INT2NUM(p->intvalue));
+        break;
+    case FMOD_STUDIO_USER_PROPERTY_TYPE_BOOLEAN:
+        rb_iv_set(self, "@value", BOOL2RB(p->boolvalue));
+        break;
+    case FMOD_STUDIO_USER_PROPERTY_TYPE_FLOAT:
+        rb_iv_set(self, "@value", DBL2NUM(p->floatvalue));
+        break;
+    case FMOD_STUDIO_USER_PROPERTY_TYPE_STRING:
+        rb_iv_set(self, "@value", rb_str_new_cstr(p->stringvalue));
+        break;
+    default:
+        rb_raise(rb_eRuntimeError, "User property type is invalid");
+        break;
+}
+FMOD2RB_END;
+
 void bindFmodStudioStructs()
 {
     rb_cMemoryUsage = rb_define_class_under(rb_mFMOD_Studio, "MemoryUsage", rb_cObject);
@@ -48,4 +77,9 @@ void bindFmodStudioStructs()
     rb_cParameterID = rb_define_class_under(rb_mFMOD_Studio, "ParameterID", rb_cObject);
     ATTR(rb_cParameterID, data1);
     ATTR(rb_cParameterID, data2);
+
+    rb_cUserProperty = rb_define_class_under(rb_mFMOD_Studio, "UserProperty", rb_cObject);
+    ATTR(rb_cUserProperty, name);
+    ATTR(rb_cUserProperty, type);
+    ATTR(rb_cUserProperty, value);
 }

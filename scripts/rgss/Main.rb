@@ -19,8 +19,8 @@ end
 puts FMOD::Studio::System.initialize(512, 0, 0)
 puts FMOD::Studio::System.is_valid
 
-result, bank = FMOD::Studio::System.load_bank_file("Master Bank.bank", FMOD::Studio::LoadBankFlags::NONBLOCKING)
-result, strbank = FMOD::Studio::System.load_bank_file("Master Bank.strings.bank", 0)
+result, bank = FMOD::Studio::System.load_bank_file("Master.bank", FMOD::Studio::LoadBankFlags::NONBLOCKING)
+result, strbank = FMOD::Studio::System.load_bank_file("Master.strings.bank", 0)
 puts bank.is_valid.to_s
 puts bank.get_path.to_s
 puts strbank.is_valid.to_s
@@ -53,6 +53,17 @@ list2.each_with_index do |b, i|
   puts b.get_memory_usage.to_s
 end
 
+def dump_parameter(d)
+  puts "param: #{d}"
+  puts "name: #{d.name}"
+  puts "id: #{d.id} data1: #{d.id.data1} data2: #{d.id.data2}"
+  puts "min: #{d.minimum} max: #{d.maximum}"
+  puts "default: #{d.default_value}"
+  puts "type: #{d.type}"
+  puts "flags: #{d.flags}"
+  puts "guid: #{d.guid} data1: #{d.guid.data1} data2: #{d.guid.data2} data3: #{d.guid.data3} data4: #{d.guid.data4}"
+end
+
 result, list3 = bank.get_event_list
 puts list3.to_s
 list3.each_with_index do |b, i|
@@ -62,15 +73,33 @@ list3.each_with_index do |b, i|
   result, count = b.get_parameter_description_count
   count.times do |j|
     result, d = b.get_parameter_description_by_index(j)
-    puts "index: #{j} param: #{d}"
-    puts d.name
-    puts "id: #{d.id} min: #{d.id.data1} max: #{d.id.data2}"
-    puts "min: #{d.minimum} max: #{d.maximum}"
-    puts "default: #{d.default_value}"
-    puts "type: #{d.type}"
-    puts "flags: #{d.flags}"
-    puts "guid: #{d.guid} data1: #{d.guid.data1} data2: #{d.guid.data2} data3: #{d.guid.data3} data4: #{d.guid.data4}"
+    dump_parameter(d)
+    #puts b.get_parameter_label_by_index(j, 0.0).to_s
+    #puts b.get_parameter_label_by_name(d.name, 0.0).to_s
+    #puts b.get_parameter_label_by_id(d.id, 0.0).to_s
   end
+  result, count = b.get_user_property_count
+  count.times do |j|
+    result, d = b.get_user_property_by_index(j)
+    puts "user property: #{d}"
+    puts "name: #{d.name}"
+    puts "type: #{d.type}"
+    puts "value: #{d.value}"
+  end
+  puts b.get_length.to_s
+  puts b.get_min_max.to_s
+  puts b.get_min_max.to_s
+  puts b.is_snapshot.to_s
+  puts b.is_oneshot.to_s
+  puts b.is_stream.to_s
+  puts b.is_3d.to_s
+  puts b.is_doppler_enabled.to_s
+  puts b.has_sustain_point.to_s
+  puts b.get_instance_count.to_s
+  puts b.load_sample_data.to_s
+  puts b.get_sample_loading_state.to_s
+  puts b.unload_sample_data.to_s
+  puts b.release_all_instances.to_s
 end
 
 begin

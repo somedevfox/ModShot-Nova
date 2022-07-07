@@ -141,6 +141,8 @@ extern VALUE rb_cParameterID;
 DEFINE_CONVERT_FUNC(FMOD_STUDIO_PARAMETER_ID);
 extern VALUE rb_cParameterDescription;
 DEFINE_CONVERT_FUNC(FMOD_STUDIO_PARAMETER_DESCRIPTION);
+extern VALUE rb_cUserProperty;
+DEFINE_CONVERT_FUNC(FMOD_STUDIO_USER_PROPERTY);
 
 void bindFmodStudioBank();
 void bindFmodStudioSystem();

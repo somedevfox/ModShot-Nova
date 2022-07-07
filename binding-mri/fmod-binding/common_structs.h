@@ -5,7 +5,7 @@
 
 #define DEFINE_CONVERT_FUNC(type)                      \
     VALUE fmod##type##2rb(type * p, bool free = true); \
-    type *rb2fmod##type(VALUE self);
+    type *rb2##type(VALUE self);
 
 #define DECLARE_FMOD2RB(type, klass)           \
     VALUE fmod##type##2rb(type * p, bool free) \
@@ -31,7 +31,7 @@
     }
 
 #define DECLARE_RB2FMOD(type, klass) \
-    type *rb2fmod##type(VALUE self)  \
+    type *rb2##type(VALUE self)  \
     {                                \
         type *p = new type();
 
