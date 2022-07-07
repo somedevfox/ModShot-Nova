@@ -269,7 +269,7 @@ struct RGSSThreadData
 	#ifndef USE_FMOD
 	ALCdevice *alcDev;
 	#else
-	FMOD_STUDIO_SYSTEM *fmodSystem;
+	//FMOD_STUDIO_SYSTEM *fmodSystem;
 	#endif
 
 	Vec2 sizeResoRatio;
@@ -287,7 +287,7 @@ struct RGSSThreadData
 				   #ifndef USE_FMOD
 	               ALCdevice *alcDev,
 				   #else
-				   FMOD_STUDIO_SYSTEM *system,
+				   //FMOD_STUDIO_SYSTEM *system,
 				   #endif
 	               int refreshRate,
 	               const Config& newconf)
@@ -297,7 +297,7 @@ struct RGSSThreadData
 		  #ifndef USE_FMOD
 	      alcDev(alcDev),
 		  #else
-		  fmodSystem(system),
+		  //fmodSystem(system),
 		  #endif
 	      sizeResoRatio(1, 1),
 	      refreshRate(refreshRate),

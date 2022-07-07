@@ -72,8 +72,8 @@ struct SharedStatePrivate
 	#ifndef USE_FMOD
 	Audio audio;
 	#else
-	FMOD_STUDIO_SYSTEM *studio_system;
-	FMOD_SYSTEM *core_system;
+	//FMOD_STUDIO_SYSTEM *studio_system;
+	//FMOD_SYSTEM *core_system;
 	#endif
 
 	Oneshot oneshot;
@@ -114,7 +114,7 @@ struct SharedStatePrivate
 		  #ifndef USE_FMOD
 	      audio(*threadData),
 		  #else
-		  studio_system(threadData->fmodSystem),
+		  //studio_system(threadData->fmodSystem),
 		  #endif
 	      oneshot(*threadData),
 	      _glState(threadData->config),
@@ -148,9 +148,9 @@ struct SharedStatePrivate
 		TEXFBO::linkFBO(gpTexFBO);
 
 		#ifdef USE_FMOD
-		if (FMOD_Studio_System_GetCoreSystem(studio_system, &core_system) != FMOD_OK) {
-			throw Exception(Exception::MKXPError, "Failed to get core fmod system");
-		}
+		//if (FMOD_Studio_System_GetCoreSystem(studio_system, &core_system) != FMOD_OK) {
+		//	throw Exception(Exception::MKXPError, "Failed to get core fmod system");
+		//}
 		#endif
 	}
 
@@ -226,8 +226,8 @@ GSATT(Input&, input)
 #ifndef USE_FMOD
 GSATT(Audio&, audio)
 #else
-GSATT(FMOD_STUDIO_SYSTEM*, studio_system);
-GSATT(FMOD_SYSTEM*, core_system);
+//GSATT(FMOD_STUDIO_SYSTEM*, studio_system);
+//GSATT(FMOD_SYSTEM*, core_system);
 #endif
 GSATT(Oneshot&, oneshot)
 #ifdef STEAM

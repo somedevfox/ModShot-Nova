@@ -42,6 +42,9 @@ elif gfx_backend == 'gl'
 endif
 
 fmod = get_option('fmod')
+if get_option('auto_clean_fmod')
+    global_args += '-DAUTO_CLEAN_FMOD=true'
+endif
 
 # ====================
 # Main source

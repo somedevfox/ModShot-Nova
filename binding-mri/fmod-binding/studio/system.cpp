@@ -1,23 +1,40 @@
 #include "binding-util.h"
 #include "fmod_bindings.h"
-#include "sharedstate.h"
 
-RB_METHOD(systemInitialize) {
+DEF_TYPE(StudioSystem);
+StudioSystem::~StudioSystem()
+{
+    #if AUTO_RELEASE
+    Debug() << "Warning: auto releasing studio system (garbage collected?)";
+    Debug() << "Studio system release result: " << FMOD_Studio_System_Release(p);
+    #endif
+}
+
+//! Need to define custom new function because Ruby
+//! does not allow for custom return values from initialize.
+RB_METHOD(systemNew) {
     int maxchannels;
     int studioflags;
     int flags;
     rb_get_args(argc, argv, "iii", &maxchannels, &studioflags, &flags RB_ARG_END);
 
-    FMOD_RESULT result = FMOD_Studio_System_Initialize(
-        shState->studio_system(), maxchannels, studioflags, flags, 0
-    );
+    FMOD_STUDIO_SYSTEM *system = NULL;
+    FMOD_RESULT result = FMOD_Studio_System_Create(&system, FMOD_VERSION);
 
-    FMOD_RESULT_SIMPLE;
+    if (result == FMOD_OK) {
+        result = FMOD_Studio_System_Initialize(system, maxchannels, studioflags, flags, NULL);
+    }
+
+    FMOD_RESULT_BASE;
+    if (result == FMOD_OK) {
+        VALUE self = rb_obj_alloc(rb_cStudioSystem); //! Manually allocate the object
+        setPrivateData(self, new StudioSystem(system));
+        rb_ary_push(return_ary, self);
+    }
+    FMOD_RESULT_RET;
 }
 
-RB_METHOD(systemIsValid) {
-    return BOOL2RB(FMOD_Studio_System_IsValid(shState->studio_system()));
-}
+FMOD_VALID_FUNC(FMOD_Studio_System, StudioSystem);
 
 RB_METHOD(systemLoadBankFile) {
     const char* filename;
@@ -25,21 +42,26 @@ RB_METHOD(systemLoadBankFile) {
 
     rb_get_args(argc, argv, "zi", &filename, &flags RB_ARG_END);
 
+    StudioSystem *b = getPrivateData<StudioSystem>(self);
+
     //? Initialize bank as a NULL pointer
     FMOD_STUDIO_BANK* bank = NULL;
     //? Load bank
     FMOD_RESULT result = FMOD_Studio_System_LoadBankFile(
-        shState->studio_system(), filename, flags, &bank
+        b->p, filename, flags, &bank
     );
 
     //? Wrap bank result and return it
     FMOD_RESULT_WRAP(bank, Bank);
 }
 
-void bindFmodStudioSystem() {
-    VALUE module = rb_define_module_under(rb_mFMOD_Studio, "System");
+VALUE rb_cStudioSystem = Qnil;
 
-    _rb_define_module_function(module, "initialize", systemInitialize);
-    _rb_define_module_function(module, "is_valid", systemIsValid);
-    _rb_define_module_function(module, "load_bank_file", systemLoadBankFile);
+void bindFmodStudioSystem() {
+    rb_cStudioSystem = rb_define_class_under(rb_mFMOD_Studio, "System", rb_cObject);
+    rb_define_alloc_func(rb_cStudioSystem, classAllocate<&StudioSystemType>);
+
+    _rb_define_module_function(rb_cStudioSystem, "new", systemNew);
+    _rb_define_method(rb_cStudioSystem, "is_valid", fmodIsValid);
+    _rb_define_method(rb_cStudioSystem, "load_bank_file", systemLoadBankFile);
 }

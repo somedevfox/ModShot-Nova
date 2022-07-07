@@ -16,11 +16,12 @@ module Audio
   end
 end
 
-puts FMOD::Studio::System.initialize(512, 0, 0)
-puts FMOD::Studio::System.is_valid
+result, s = FMOD::Studio::System.new(512, 0, 0)
+puts "result: #{result} system: #{s}"
+puts s.is_valid
 
-result, bank = FMOD::Studio::System.load_bank_file("Master.bank", FMOD::Studio::LoadBankFlags::NONBLOCKING)
-result, strbank = FMOD::Studio::System.load_bank_file("Master.strings.bank", 0)
+result, bank = s.load_bank_file("Master.bank", FMOD::Studio::LoadBankFlags::NONBLOCKING)
+result, strbank = s.load_bank_file("Master.strings.bank", 0)
 puts bank.is_valid.to_s
 puts bank.get_path.to_s
 puts strbank.is_valid.to_s

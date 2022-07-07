@@ -414,14 +414,14 @@ int main(int argc, char *argv[]) {
 		showInitError("OpenAL device does not support Effects extension.");
 	}
 	#else
-	FMOD_RESULT result;
-	FMOD_STUDIO_SYSTEM *system = NULL;
-
-	result = FMOD_Studio_System_Create(&system, FMOD_VERSION);
-	if (result != FMOD_OK) {
-		showInitError(std::string("Error creating FMOD system: ") + FMOD_ErrorString(result));
-		return 0;
-	}
+	//FMOD_RESULT result;
+	//FMOD_STUDIO_SYSTEM *system = NULL;
+	//
+	//result = FMOD_Studio_System_Create(&system, FMOD_VERSION);
+	//if (result != FMOD_OK) {
+	//	showInitError(std::string("Error creating FMOD system: ") + FMOD_ErrorString(result));
+	//	return 0;
+	//}
 
 	//result = FMOD_Studio_System_Initialize(system, conf.maxFmodChannels, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0);
 	//if (result != FMOD_OK) {
@@ -442,7 +442,7 @@ int main(int argc, char *argv[]) {
 						  #ifndef USE_FMOD
 	                      alcDev,
 						  #else
-						  system,
+						  // system,
 						  #endif
 						  mode.refresh_rate, conf);
 

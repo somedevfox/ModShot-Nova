@@ -9,7 +9,9 @@
 #define BOOL2RB(val) ((val) ? Qtrue : Qfalse)
 #define RB2BOOL(val) (val == Qtrue)
 
+#ifndef AUTO_RELEASE
 #define AUTO_RELEASE false
+#endif
 
 /*
  * We use wrapper classes since we can't set the private data
@@ -112,6 +114,9 @@
     FMOD_RESULT_BASE       \
     FMOD_RESULT_RET
 
+DEF_FMOD_WRAPPER(StudioSystem, FMOD_STUDIO_SYSTEM);
+DECL_TYPE(StudioSystem);
+
 //? Define wrapper for Bank
 DEF_FMOD_WRAPPER(Bank, FMOD_STUDIO_BANK);
 //? Define ruby data type for Bank
@@ -139,6 +144,7 @@ extern VALUE rb_mFMOD_Studio;
 extern VALUE rb_cGUID;
 DEFINE_CONVERT_FUNC(FMOD_GUID);
 
+extern VALUE rb_cStudioSystem;
 extern VALUE rb_cBank;
 extern VALUE rb_cVCA;
 extern VALUE rb_cBus;
