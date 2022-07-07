@@ -371,7 +371,7 @@ RB_METHOD(descriptionSetCallback)
 
 FMOD_USERDATA_FUNC(FMOD_Studio_EventDescription, EventDescription);
 
-void bindFmodEventdescription()
+void bindFmodStudioEventDescription()
 {
     rb_cEventDescription = rb_define_class_under(
         rb_mFMOD_Studio, "EventDescription", rb_cObject);

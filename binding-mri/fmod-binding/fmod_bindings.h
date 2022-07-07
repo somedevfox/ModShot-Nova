@@ -9,6 +9,8 @@
 #define BOOL2RB(val) ((val) ? Qtrue : Qfalse)
 #define RB2BOOL(val) (val == Qtrue)
 
+#define AUTO_RELEASE false
+
 /*
  * We use wrapper classes since we can't set the private data
  * of the ruby object using setPrivateData<Klass>(klass, self)
@@ -124,6 +126,12 @@ DECL_TYPE(Bus);
 DEF_FMOD_WRAPPER(EventDescription, FMOD_STUDIO_EVENTDESCRIPTION);
 DECL_TYPE(EventDescription);
 
+DEF_FMOD_WRAPPER(EventInstance, FMOD_STUDIO_EVENTINSTANCE);
+DECL_TYPE(EventInstance);
+
+DEF_FMOD_WRAPPER(CommandReplay, FMOD_STUDIO_COMMANDREPLAY);
+DECL_TYPE(CommandReplay);
+
 // * Modules and classes to be defined under
 extern VALUE rb_mFMOD;
 extern VALUE rb_mFMOD_Core;
@@ -143,13 +151,17 @@ extern VALUE rb_cParameterDescription;
 DEFINE_CONVERT_FUNC(FMOD_STUDIO_PARAMETER_DESCRIPTION);
 extern VALUE rb_cUserProperty;
 DEFINE_CONVERT_FUNC(FMOD_STUDIO_USER_PROPERTY);
+extern VALUE rb_cEventInstance;
+extern VALUE rb_cCommandReplay;
 
 void bindFmodStudioBank();
 void bindFmodStudioSystem();
 void bindFmodStudioStructs();
 void bindFmodStudioVCA();
 void bindFmodStudioBus();
-void bindFmodEventdescription();
+void bindFmodStudioEventDescription();
+void bindFmodStudioEventInstance();
+void bindFmodStudioCommandReplay();
 
 void bindFmodCoreStructs();
 

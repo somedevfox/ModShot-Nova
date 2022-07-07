@@ -20,9 +20,10 @@ DEF_TYPE(Bank);
 */
 Bank::~Bank()
 {
+    #if AUTO_RELEASE
     Debug() << "Warning: auto unloading bank (garbage collected?)";
-    Debug() << "Bank unloading result:" << FMOD_Studio_Bank_Unload(p);
-    /* free(p) */
+    Debug() << "Bank unloading result: " << FMOD_Studio_Bank_Unload(p);
+    #endif
 }
 
 VALUE rb_cBank = Qnil;

@@ -44,6 +44,8 @@ global_sources += [files(
     'fmod-binding/studio/vca.cpp',
     'fmod-binding/studio/bus.cpp',
     'fmod-binding/studio/eventdescription.cpp',
+    'fmod-binding/studio/eventinstance.cpp',
+    'fmod-binding/studio/commandreplay.cpp',
     'fmod-binding/studio/common_structs.cpp',
     'fmod-binding/core/fmod-core-binding.cpp',
     'fmod-binding/core/common_structs.cpp',
