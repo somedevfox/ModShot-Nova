@@ -9,10 +9,6 @@
 #define BOOL2RB(val) ((val) ? Qtrue : Qfalse)
 #define RB2BOOL(val) (val == Qtrue)
 
-#ifndef AUTO_RELEASE
-#define AUTO_RELEASE false
-#endif
-
 /*
  * We use wrapper classes since we can't set the private data
  * of the ruby object using setPrivateData<Klass>(klass, self)

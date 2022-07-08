@@ -20,7 +20,7 @@ DEF_TYPE(Bank);
 */
 Bank::~Bank()
 {
-    #if AUTO_RELEASE
+    #ifdef AUTO_CLEAN_FMOD
     Debug() << "Warning: auto unloading bank (garbage collected?)";
     Debug() << "Bank unloading result: " << FMOD_Studio_Bank_Unload(p);
     #endif

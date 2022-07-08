@@ -43,7 +43,7 @@ endif
 
 fmod = get_option('fmod')
 if get_option('auto_clean_fmod')
-    global_args += '-DAUTO_CLEAN_FMOD=true'
+    global_args += '-DAUTO_CLEAN_FMOD'
 endif
 
 # ====================

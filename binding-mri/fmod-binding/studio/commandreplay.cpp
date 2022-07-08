@@ -5,7 +5,7 @@
 DEF_TYPE(CommandReplay);
 CommandReplay::~CommandReplay()
 {
-    #if AUTO_RELEASE
+    #ifdef AUTO_CLEAN_FMOD
     Debug() << "Warning: auto releasing command replay (garbage collected?)";
     Debug() << "Command replay release result: " << FMOD_Studio_CommandReplay_Release(p);
     #endif

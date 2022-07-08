@@ -5,7 +5,7 @@
 DEF_TYPE(EventInstance);
 EventInstance::~EventInstance()
 {
-    #if AUTO_RELEASE
+    #ifdef AUTO_CLEAN_FMOD
     Debug() << "Warning: auto releasing event instance (garbage collected?)";
     Debug() << "Event instance release result: " << FMOD_Studio_EventInstance_Release(p);
     #endif

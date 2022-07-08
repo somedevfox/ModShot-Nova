@@ -16,92 +16,97 @@ module Audio
   end
 end
 
-result, s = FMOD::Studio::System.new(512, 0, 0)
-puts "result: #{result} system: #{s}"
-puts s.is_valid
+def run_fmod_test
+  result, s = FMOD::Studio::System.new(512, 0, 0)
+  puts "result: #{result} system: #{s}"
+  puts s.is_valid
 
-result, bank = s.load_bank_file("Master.bank", FMOD::Studio::LoadBankFlags::NONBLOCKING)
-result, strbank = s.load_bank_file("Master.strings.bank", 0)
-puts bank.is_valid.to_s
-puts bank.get_path.to_s
-puts strbank.is_valid.to_s
-puts strbank.get_path.to_s
+  result, bank = s.load_bank_file("Master.bank", FMOD::Studio::LoadBankFlags::NONBLOCKING)
+  result, strbank = s.load_bank_file("Master.strings.bank", 0)
+  puts bank.is_valid.to_s
+  puts bank.get_path.to_s
+  puts strbank.is_valid.to_s
+  puts strbank.get_path.to_s
 
-result, count = strbank.get_string_count
-count.times do |i|
-  puts strbank.get_string_info(i).to_s
-end
-
-result, list = bank.get_vca_list
-puts list.to_s
-list.each_with_index do |v, i|
-  puts "index: #{i} vca: #{v} valid: #{v.is_valid}"
-  puts "guid: #{v.get_id[1]} data1: #{v.get_id[1].data1} data2: #{v.get_id[1].data2} data3: #{v.get_id[1].data3} data4: #{v.get_id[1].data4}"
-  puts v.get_path.to_s
-  puts v.get_volume.to_s
-end
-
-result, list2 = bank.get_bus_list
-puts list2.to_s
-list2.each_with_index do |b, i|
-  puts "index: #{i} bus: #{b} valid: #{b.is_valid}"
-  puts "guid: #{b.get_id[1]} data1: #{b.get_id[1].data1} data2: #{b.get_id[1].data2} data3: #{b.get_id[1].data3} data4: #{b.get_id[1].data4}"
-  puts b.get_path.to_s
-  puts b.get_volume.to_s
-  puts b.get_paused.to_s
-  puts b.get_port_index.to_s
-  puts b.get_cpu_usage.to_s
-  puts b.get_memory_usage.to_s
-end
-
-def dump_parameter(d)
-  puts "param: #{d}"
-  puts "name: #{d.name}"
-  puts "id: #{d.id} data1: #{d.id.data1} data2: #{d.id.data2}"
-  puts "min: #{d.minimum} max: #{d.maximum}"
-  puts "default: #{d.default_value}"
-  puts "type: #{d.type}"
-  puts "flags: #{d.flags}"
-  puts "guid: #{d.guid} data1: #{d.guid.data1} data2: #{d.guid.data2} data3: #{d.guid.data3} data4: #{d.guid.data4}"
-end
-
-result, list3 = bank.get_event_list
-puts list3.to_s
-list3.each_with_index do |b, i|
-  puts "index: #{i} bus: #{b} valid: #{b.is_valid}"
-  puts "guid: #{b.get_id[1]} data1: #{b.get_id[1].data1} data2: #{b.get_id[1].data2} data3: #{b.get_id[1].data3} data4: #{b.get_id[1].data4}"
-  puts b.get_path.to_s
-  result, count = b.get_parameter_description_count
-  count.times do |j|
-    result, d = b.get_parameter_description_by_index(j)
-    dump_parameter(d)
-    #puts b.get_parameter_label_by_index(j, 0.0).to_s
-    #puts b.get_parameter_label_by_name(d.name, 0.0).to_s
-    #puts b.get_parameter_label_by_id(d.id, 0.0).to_s
+  result, count = strbank.get_string_count
+  count.times do |i|
+    puts strbank.get_string_info(i).to_s
   end
-  result, count = b.get_user_property_count
-  count.times do |j|
-    result, d = b.get_user_property_by_index(j)
-    puts "user property: #{d}"
+
+  result, list = bank.get_vca_list
+  puts list.to_s
+  list.each_with_index do |v, i|
+    puts "index: #{i} vca: #{v} valid: #{v.is_valid}"
+    puts "guid: #{v.get_id[1]} data1: #{v.get_id[1].data1} data2: #{v.get_id[1].data2} data3: #{v.get_id[1].data3} data4: #{v.get_id[1].data4}"
+    puts v.get_path.to_s
+    puts v.get_volume.to_s
+  end
+
+  result, list2 = bank.get_bus_list
+  puts list2.to_s
+  list2.each_with_index do |b, i|
+    puts "index: #{i} bus: #{b} valid: #{b.is_valid}"
+    puts "guid: #{b.get_id[1]} data1: #{b.get_id[1].data1} data2: #{b.get_id[1].data2} data3: #{b.get_id[1].data3} data4: #{b.get_id[1].data4}"
+    puts b.get_path.to_s
+    puts b.get_volume.to_s
+    puts b.get_paused.to_s
+    puts b.get_port_index.to_s
+    puts b.get_cpu_usage.to_s
+    puts b.get_memory_usage.to_s
+  end
+
+  def dump_parameter(d)
+    puts "param: #{d}"
     puts "name: #{d.name}"
+    puts "id: #{d.id} data1: #{d.id.data1} data2: #{d.id.data2}"
+    puts "min: #{d.minimum} max: #{d.maximum}"
+    puts "default: #{d.default_value}"
     puts "type: #{d.type}"
-    puts "value: #{d.value}"
+    puts "flags: #{d.flags}"
+    puts "guid: #{d.guid} data1: #{d.guid.data1} data2: #{d.guid.data2} data3: #{d.guid.data3} data4: #{d.guid.data4}"
   end
-  puts b.get_length.to_s
-  puts b.get_min_max.to_s
-  puts b.get_min_max.to_s
-  puts b.is_snapshot.to_s
-  puts b.is_oneshot.to_s
-  puts b.is_stream.to_s
-  puts b.is_3d.to_s
-  puts b.is_doppler_enabled.to_s
-  puts b.has_sustain_point.to_s
-  puts b.get_instance_count.to_s
-  puts b.load_sample_data.to_s
-  puts b.get_sample_loading_state.to_s
-  puts b.unload_sample_data.to_s
-  puts b.release_all_instances.to_s
+
+  result, list3 = bank.get_event_list
+  puts list3.to_s
+  list3.each_with_index do |b, i|
+    puts "index: #{i} bus: #{b} valid: #{b.is_valid}"
+    puts "guid: #{b.get_id[1]} data1: #{b.get_id[1].data1} data2: #{b.get_id[1].data2} data3: #{b.get_id[1].data3} data4: #{b.get_id[1].data4}"
+    puts b.get_path.to_s
+    result, count = b.get_parameter_description_count
+    count.times do |j|
+      result, d = b.get_parameter_description_by_index(j)
+      dump_parameter(d)
+      #puts b.get_parameter_label_by_index(j, 0.0).to_s
+      #puts b.get_parameter_label_by_name(d.name, 0.0).to_s
+      #puts b.get_parameter_label_by_id(d.id, 0.0).to_s
+    end
+    result, count = b.get_user_property_count
+    count.times do |j|
+      result, d = b.get_user_property_by_index(j)
+      puts "user property: #{d}"
+      puts "name: #{d.name}"
+      puts "type: #{d.type}"
+      puts "value: #{d.value}"
+    end
+    puts b.get_length.to_s
+    puts b.get_min_max.to_s
+    puts b.get_min_max.to_s
+    puts b.is_snapshot.to_s
+    puts b.is_oneshot.to_s
+    puts b.is_stream.to_s
+    puts b.is_3d.to_s
+    puts b.is_doppler_enabled.to_s
+    puts b.has_sustain_point.to_s
+    puts b.get_instance_count.to_s
+    puts b.load_sample_data.to_s
+    puts b.get_sample_loading_state.to_s
+    puts b.unload_sample_data.to_s
+    puts b.release_all_instances.to_s
+  end
 end
+
+run_fmod_test()
+GC.start
 
 begin
   $console = Graphics.fullscreen
