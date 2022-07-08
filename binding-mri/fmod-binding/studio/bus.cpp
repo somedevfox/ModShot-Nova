@@ -95,6 +95,7 @@ void bindFmodStudioBus()
 {
     rb_cBus = rb_define_class_under(rb_mFMOD_Studio, "Bus", rb_cObject);
     rb_define_alloc_func(rb_cBus, classAllocate<&BusType>);
+    _rb_define_method(rb_cBus, "initialize", fmodErrorInit);
 
     _rb_define_method(rb_cBus, "is_valid", fmodIsValid);
     _rb_define_method(rb_cBus, "get_id", fmodGetID);

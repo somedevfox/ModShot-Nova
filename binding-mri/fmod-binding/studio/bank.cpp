@@ -162,8 +162,7 @@ RB_METHOD(bankGetStringInfo)
     FMOD_RESULT_BASE;
     if (guid)
     {
-        VALUE return_val = rb_class_new_instance(0, NULL, rb_cGUID);
-        setPrivateData(return_val, guid);
+        VALUE return_val = fmodFMOD_GUID2rb(guid);
         rb_ary_push(return_ary, return_val);
     }
     if (path)
@@ -225,7 +224,7 @@ RB_METHOD(bankGetVCAList)
         for (int i = 0; i < count; i++)
         {
             //? Convert VCA and add it to the array
-            VALUE ele = rb_class_new_instance(0, NULL, rb_cVCA);
+            VALUE ele = rb_obj_alloc(rb_cVCA);
             setPrivateData(ele, new VCA(array[i]));
             rb_ary_push(vca_ary, ele);
         }
@@ -273,7 +272,7 @@ RB_METHOD(bankGetBusList)
 
         for (int i = 0; i < count; i++)
         {
-            VALUE ele = rb_class_new_instance(0, NULL, rb_cBus);
+            VALUE ele = rb_obj_alloc(rb_cBus);
             setPrivateData(ele, new Bus(array[i]));
             rb_ary_push(bus_ary, ele);
         }
@@ -320,7 +319,7 @@ RB_METHOD(bankGetEventList)
 
         for (int i = 0; i < count; i++)
         {
-            VALUE ele = rb_class_new_instance(0, NULL, rb_cEventDescription);
+            VALUE ele = rb_obj_alloc(rb_cEventDescription);
             setPrivateData(ele, new EventDescription(array[i]));
             rb_ary_push(bus_ary, ele);
         }
@@ -335,6 +334,7 @@ void bindFmodStudioBank()
 {
     rb_cBank = rb_define_class_under(rb_mFMOD_Studio, "Bank", rb_cObject);
     rb_define_alloc_func(rb_cBank, classAllocate<&BankType>);
+    _rb_define_method(rb_cBank, "initialize", fmodErrorInit);
 
     _rb_define_method(rb_cBank, "is_valid", fmodIsValid);
     _rb_define_method(rb_cBank, "get_id", fmodGetID);

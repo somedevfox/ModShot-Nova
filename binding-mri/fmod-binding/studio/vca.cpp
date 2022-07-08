@@ -22,6 +22,7 @@ void bindFmodStudioVCA()
 {
     rb_cVCA = rb_define_class_under(rb_mFMOD_Studio, "VCA", rb_cObject);
     rb_define_alloc_func(rb_cVCA, classAllocate<&VCAType>);
+    _rb_define_method(rb_cVCA, "initialize", fmodErrorInit);
 
     _rb_define_method(rb_cVCA, "is_valid", fmodIsValid);
     _rb_define_method(rb_cVCA, "get_id", fmodGetID);

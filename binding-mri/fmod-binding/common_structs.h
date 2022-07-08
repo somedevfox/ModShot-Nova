@@ -10,7 +10,7 @@
 #define DECLARE_FMOD2RB(type, klass)           \
     VALUE fmod##type##2rb(type * p, bool free) \
     {                                          \
-        VALUE self = rb_class_new_instance(0, NULL, klass);
+        VALUE self = rb_obj_alloc(klass);
 
 #define FMOD2RB(path, convert) \
     rb_iv_set(self, "@" #path, convert(p->path));

@@ -20,4 +20,5 @@ void bindFmodStudioEventInstance() {
     rb_cEventInstance = rb_define_class_under(
         rb_mFMOD_Studio, "EventInstance", rb_cObject);
     rb_define_alloc_func(rb_cEventInstance, classAllocate<&EventInstanceType>);
+    _rb_define_method(rb_cEventInstance, "initialize", fmodErrorInit);
 }

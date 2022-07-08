@@ -57,11 +57,12 @@
 
 #define FMOD_RESULT_RET return return_ary;
 
+//! We use alloc since it skirts around initializing the object
 #define FMOD_RESULT_WRAP(val, wrap)                                    \
     FMOD_RESULT_BASE                                                   \
     if (result == FMOD_OK)                                             \
     {                                                                  \
-        VALUE return_val = rb_class_new_instance(0, NULL, rb_c##wrap); \
+        VALUE return_val = rb_obj_alloc(rb_c##wrap);                   \
         setPrivateData(return_val, new wrap(val));                     \
         rb_ary_push(return_ary, return_val);                           \
     }                                                                  \
@@ -167,6 +168,12 @@ void bindFmodStudioCommandReplay();
 
 void bindFmodCoreStructs();
 
+
+inline RB_METHOD(fmodErrorInit) {
+    rb_raise(rb_eException, "You cannot instantiate this class directly.");
+
+    return Qnil;
+}
 
 //? These functions are common, so we share them
 //? in the header

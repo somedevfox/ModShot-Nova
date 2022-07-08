@@ -37,7 +37,7 @@ def run_fmod_test
   puts list.to_s
   list.each_with_index do |v, i|
     puts "index: #{i} vca: #{v} valid: #{v.is_valid}"
-    puts "guid: #{v.get_id[1]} data1: #{v.get_id[1].data1} data2: #{v.get_id[1].data2} data3: #{v.get_id[1].data3} data4: #{v.get_id[1].data4}"
+    puts "guid: #{v.get_id[1].inspect}"
     puts v.get_path.to_s
     puts v.get_volume.to_s
   end
@@ -46,7 +46,7 @@ def run_fmod_test
   puts list2.to_s
   list2.each_with_index do |b, i|
     puts "index: #{i} bus: #{b} valid: #{b.is_valid}"
-    puts "guid: #{b.get_id[1]} data1: #{b.get_id[1].data1} data2: #{b.get_id[1].data2} data3: #{b.get_id[1].data3} data4: #{b.get_id[1].data4}"
+    puts "guid: #{b.get_id[1].inspect}"
     puts b.get_path.to_s
     puts b.get_volume.to_s
     puts b.get_paused.to_s
@@ -58,19 +58,19 @@ def run_fmod_test
   def dump_parameter(d)
     puts "param: #{d}"
     puts "name: #{d.name}"
-    puts "id: #{d.id} data1: #{d.id.data1} data2: #{d.id.data2}"
+    puts "id: #{d.id.inspect}"
     puts "min: #{d.minimum} max: #{d.maximum}"
     puts "default: #{d.default_value}"
     puts "type: #{d.type}"
     puts "flags: #{d.flags}"
-    puts "guid: #{d.guid} data1: #{d.guid.data1} data2: #{d.guid.data2} data3: #{d.guid.data3} data4: #{d.guid.data4}"
+    puts "guid: #{d.guid}"
   end
 
   result, list3 = bank.get_event_list
   puts list3.to_s
   list3.each_with_index do |b, i|
     puts "index: #{i} bus: #{b} valid: #{b.is_valid}"
-    puts "guid: #{b.get_id[1]} data1: #{b.get_id[1].data1} data2: #{b.get_id[1].data2} data3: #{b.get_id[1].data3} data4: #{b.get_id[1].data4}"
+    puts "guid: #{b.get_id[1].inspect}"
     puts b.get_path.to_s
     result, count = b.get_parameter_description_count
     count.times do |j|
