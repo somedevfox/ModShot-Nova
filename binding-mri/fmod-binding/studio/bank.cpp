@@ -1,6 +1,9 @@
 #include "binding-util.h"
 #include "fmod_bindings.h"
+#ifdef AUTO_CLEAN_FMOD
 #include "debugwriter.h"
+#include <fmod_errors.h>
+#endif
 
 /*
 ? Bank bindings
@@ -22,7 +25,7 @@ Bank::~Bank()
 {
     #ifdef AUTO_CLEAN_FMOD
     Debug() << "Warning: auto unloading bank (garbage collected?)";
-    Debug() << "Bank unloading result: " << FMOD_Studio_Bank_Unload(p);
+    Debug() << "Bank unloading result: " << FMOD_ErrorString(FMOD_Studio_Bank_Unload(p));
     #endif
 }
 

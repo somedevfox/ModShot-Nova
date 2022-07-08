@@ -1,13 +1,16 @@
 #include "binding-util.h"
 #include "fmod_bindings.h"
+#ifdef AUTO_CLEAN_FMOD
 #include "debugwriter.h"
+#include <fmod_errors.h>
+#endif
 
 DEF_TYPE(StudioSystem);
 StudioSystem::~StudioSystem()
 {
     #ifdef AUTO_CLEAN_FMOD
     Debug() << "Warning: auto releasing studio system (garbage collected?)";
-    Debug() << "Studio system release result: " << FMOD_Studio_System_Release(p);
+    Debug() << "Studio system release result: " << FMOD_ErrorString(FMOD_Studio_System_Release(p));
     #endif
 }
 
