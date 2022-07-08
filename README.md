@@ -70,6 +70,8 @@ I would not suggest using it because if you are, you're likely doing something w
 
 The bindings should generally line up with what's documented in the latest FMOD docs- although things like `FMOD_Studio_System_Create` are hidden away under `FMOD::Studio::System.new` instead. The bindings are closest to the `C#` bindings for FMOD.
 
+Plugins are potentially supported via C extensions but if you really want to add support for one you may hardcode it in. Luckily there's a large swathe of macros to help you hardcode one in, so it should be very easy in the case of something like ResonanceAudio.
+
 I hope that's enough info to get you started! There will be some direct conversions of FMOD examples in the `scripts` folder when I get to it. (TODO)
 
 ### Options
