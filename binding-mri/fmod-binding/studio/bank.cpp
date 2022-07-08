@@ -315,16 +315,16 @@ RB_METHOD(bankGetEventList)
     FMOD_RESULT_BASE;
     if (array && result == FMOD_OK)
     {
-        VALUE bus_ary = rb_ary_new();
+        VALUE event_ary = rb_ary_new();
 
         for (int i = 0; i < count; i++)
         {
             VALUE ele = rb_obj_alloc(rb_cEventDescription);
             setPrivateData(ele, new EventDescription(array[i]));
-            rb_ary_push(bus_ary, ele);
+            rb_ary_push(event_ary, ele);
         }
 
-        rb_ary_push(return_ary, bus_ary);
+        rb_ary_push(return_ary, event_ary);
         delete array;
     }
     FMOD_RESULT_RET;

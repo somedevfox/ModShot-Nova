@@ -85,7 +85,6 @@ RB_METHOD(busUnlockChannelGroup)
 
 RB_METHOD(busGetChannelGroup) {
     // TODO
-    rb_raise(rb_eException, "Unimplemented");
 }
 
 FMOD_CPU_USAGE_FUNC(FMOD_Studio_Bus, Bus);

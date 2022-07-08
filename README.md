@@ -70,7 +70,19 @@ I would not suggest using it because if you are, you're likely doing something w
 
 The bindings should generally line up with what's documented in the latest FMOD docs- although things like `FMOD_Studio_System_Create` are hidden away under `FMOD::Studio::System.new` instead. The bindings are closest to the `C#` bindings for FMOD.
 
-Plugins are potentially supported via C extensions but if you really want to add support for one you may hardcode it in. Luckily there's a large swathe of macros to help you hardcode one in, so it should be very easy in the case of something like ResonanceAudio.
+Plugins are potentially supported via C extensions but if you really want to add support for one you may hardcode it in.
+Something like ResonanceAudio would be simple enough, since all you would need to do is wrap a struct like mkxp wraps classes, and the FMOD bindings here should do the rest. It'll pull a void pointer to your wrapped data by using `getPrivateData<void*>`. Getting data back like this will either convert it to a string, or the user will pass in a class that the bindings will set the data of. I still haven't decided on how to do this just yet, though, but I am leaning towards the string method.
+
+One other thing to note is that with structs you need to be mindful of method chaining.
+You can chain methods on the struct (like `struct.position.y = 15`) but if chained on the return vaue from a method it won't work.
+```rb
+# will not work!
+eventinstance.get_3d_attributes[1].up.x = 15
+# will work!
+struct = eventinstance.get_3d_attributes[1]
+struct.up.x = 15
+eventinstance.set_3d_attributes(struct)
+```
 
 I hope that's enough info to get you started! There will be some direct conversions of FMOD examples in the `scripts` folder when I get to it. (TODO)
 

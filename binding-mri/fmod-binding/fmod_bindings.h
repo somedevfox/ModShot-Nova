@@ -140,6 +140,10 @@ extern VALUE rb_mFMOD_Core;
 extern VALUE rb_mFMOD_Studio;
 extern VALUE rb_cGUID;
 DEFINE_CONVERT_FUNC(FMOD_GUID);
+extern VALUE rb_c3D_Attributes;
+DEFINE_CONVERT_FUNC(FMOD_3D_ATTRIBUTES);
+extern VALUE rb_cVector;
+DEFINE_CONVERT_FUNC(FMOD_VECTOR);
 
 extern VALUE rb_cStudioSystem;
 extern VALUE rb_cBank;

@@ -44,6 +44,9 @@
 #define RB2FMOD_CAST(name, path, cast, convert) \
     p->path = (cast)convert(rb_iv_get(self, "@" #name));
 
+#define RB2FMOD_STRUCT(path, type) \
+    p->path = *rb2##type(rb_iv_get(self, "@" #path));
+
 #define RB2FMOD_END \
     return p;       \
     }

@@ -65,6 +65,9 @@ def run_fmod_test
     puts "guid: #{d.guid}"
   end
 
+  def dump_instance(i)
+  end
+
   result, list3 = bank.get_event_list
   puts list3.inspect
   list3.each_with_index do |b, i|
@@ -100,7 +103,16 @@ def run_fmod_test
     puts b.load_sample_data.inspect
     puts b.get_sample_loading_state.inspect
     puts b.unload_sample_data.inspect
+
+    puts b.get_instance_list.inspect
+    result, i = b.create_instance
+    puts b.get_instance_count.inspect
+    puts b.get_instance_list.inspect
+    dump_instance(i)
+
     puts b.release_all_instances.inspect
+    puts b.get_instance_count.inspect
+    puts b.get_instance_list.inspect
   end
 end
 

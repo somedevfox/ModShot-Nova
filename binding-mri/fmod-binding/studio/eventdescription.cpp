@@ -297,7 +297,15 @@ RB_METHOD(descriptionHasSustainPoint)
 
 RB_METHOD(descriptionCreateInstance)
 {
-    // TODO
+    RB_UNUSED_PARAM;
+
+    EventDescription *b = getPrivateData<EventDescription>(self);
+    FMOD_STUDIO_EVENTINSTANCE *instance = NULL;
+
+    FMOD_RESULT result = FMOD_Studio_EventDescription_CreateInstance(
+        b->p, &instance);
+
+    FMOD_RESULT_WRAP(instance, EventInstance);
 }
 
 RB_METHOD(descriptionGetInstanceCount)
@@ -315,7 +323,38 @@ RB_METHOD(descriptionGetInstanceCount)
 
 RB_METHOD(descriptionGetInstanceList)
 {
-    // TODO
+    RB_UNUSED_PARAM;
+
+    EventDescription *b = getPrivateData<EventDescription>(self);
+    FMOD_STUDIO_EVENTINSTANCE **array = NULL;
+    int count;
+
+    FMOD_RESULT result = FMOD_Studio_EventDescription_GetInstanceCount(
+        b->p, &count);
+
+
+    if (result == FMOD_OK) {
+        array = new FMOD_STUDIO_EVENTINSTANCE*[count];
+        result = FMOD_Studio_EventDescription_GetInstanceList(
+            b->p, array, count, NULL);
+    }
+
+    FMOD_RESULT_BASE;
+    if (array && result == FMOD_OK)
+    {
+        VALUE instance_ary = rb_ary_new();
+
+        for (int i = 0; i < count; i++)
+        {
+            VALUE ele = rb_obj_alloc(rb_cEventInstance);
+            setPrivateData(ele, new EventInstance(array[i]));
+            rb_ary_push(instance_ary, ele);
+        }
+
+        rb_ary_push(return_ary, instance_ary);
+        delete array;
+    }
+    FMOD_RESULT_RET;
 }
 
 RB_METHOD(descriptionLoadSampleData)
