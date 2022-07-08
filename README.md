@@ -68,7 +68,7 @@ A feature is provided to automatically release **some** FMOD objects (Like Syste
 This is because some FMOD functions will allow you to "get back" an object after it has been garbage collected from ruby, and this feature messes with that.
 I would not suggest using it because if you are, you're likely doing something wrong and are relying on a bandaid fix to avoid it being an issue.
 
-The bindings should generally line up with what's documented in the latest FMOD docs- although things like `FMOD_Studio_System_Create` are hidden away under `FMOD::Studio::System.new` instead.
+The bindings should generally line up with what's documented in the latest FMOD docs- although things like `FMOD_Studio_System_Create` are hidden away under `FMOD::Studio::System.new` instead. The bindings are closest to the `C#` bindings for FMOD.
 
 I hope that's enough info to get you started! There will be some direct conversions of FMOD examples in the `scripts` folder when I get to it. (TODO)
 

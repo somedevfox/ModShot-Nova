@@ -156,6 +156,8 @@ extern VALUE rb_cUserProperty;
 DEFINE_CONVERT_FUNC(FMOD_STUDIO_USER_PROPERTY);
 extern VALUE rb_cEventInstance;
 extern VALUE rb_cCommandReplay;
+extern VALUE rb_cCommandInfo;
+DEFINE_CONVERT_FUNC(FMOD_STUDIO_COMMAND_INFO);
 
 void bindFmodStudioBank();
 void bindFmodStudioSystem();

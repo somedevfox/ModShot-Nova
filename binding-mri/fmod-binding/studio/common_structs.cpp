@@ -56,6 +56,18 @@ switch (p->type)
 }
 FMOD2RB_END;
 
+VALUE rb_cCommandInfo = Qnil;
+DECLARE_FMOD2RB(FMOD_STUDIO_COMMAND_INFO, rb_cCommandInfo);
+FMOD2RB_NAME(command_name, commandname, rb_str_new_cstr);
+FMOD2RB_NAME(parent_command_index, parentcommandindex, INT2NUM);
+FMOD2RB_NAME(frame_number, framenumber, INT2NUM);
+FMOD2RB_NAME(frame_time, frametime, DBL2NUM);
+FMOD2RB_NAME(instance_type, instancetype, INT2NUM);
+FMOD2RB_NAME(output_type, outputtype, INT2NUM);
+FMOD2RB_NAME(instance_handle, instancehandle, UINT2NUM);
+FMOD2RB_NAME(output_handle, outputhandle, UINT2NUM);
+FMOD2RB_END;
+
 void bindFmodStudioStructs()
 {
     rb_cMemoryUsage = rb_define_class_under(rb_mFMOD_Studio, "MemoryUsage", rb_cObject);
@@ -82,4 +94,14 @@ void bindFmodStudioStructs()
     ATTR(rb_cUserProperty, name);
     ATTR(rb_cUserProperty, type);
     ATTR(rb_cUserProperty, value);
+
+    rb_cCommandInfo = rb_define_class_under(rb_mFMOD_Studio, "CommandInfo", rb_cObject);
+    ATTR(rb_cCommandInfo, command_name);
+    ATTR(rb_cCommandInfo, parent_command_index);
+    ATTR(rb_cCommandInfo, frame_number);
+    ATTR(rb_cCommandInfo, frame_time);
+    ATTR(rb_cCommandInfo, instance_type);
+    ATTR(rb_cCommandInfo, output_type);
+    ATTR(rb_cCommandInfo, instance_handle);
+    ATTR(rb_cCommandInfo, output_handle);
 }
