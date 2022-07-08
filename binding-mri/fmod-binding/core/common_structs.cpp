@@ -11,6 +11,17 @@ FMOD2RB_NAME(data3, Data3, UINT2NUM);
 FMOD2RB_CAST(data4, Data4, char*, rb_str_new_cstr);
 FMOD2RB_END;
 
+DECLARE_RB2FMOD(FMOD_GUID, rb_cGUID);
+RB2FMOD_NAME(data1, Data1, NUM2UINT);
+RB2FMOD_NAME(data2, Data2, NUM2UINT);
+RB2FMOD_NAME(data3, Data3, NUM2UINT);
+if (RSTRING_LEN(rb_iv_get(self, "@data4")) != 8)
+{
+    rb_raise(rb_eArgError, "data4 must be 8 bytes long");
+}
+strcpy((char*) p->Data4, RSTRING_PTR(rb_iv_get(self, "@data4"))); //! BAD UNSAFE BAD
+RB2FMOD_END;
+
 VALUE rb_c3D_Attributes = Qnil;
 DECLARE_FMOD2RB(FMOD_3D_ATTRIBUTES, rb_c3D_Attributes);
 FMOD2RB_STRUCT(position, FMOD_VECTOR);

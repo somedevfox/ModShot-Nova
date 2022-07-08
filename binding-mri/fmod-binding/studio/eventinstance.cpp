@@ -410,7 +410,7 @@ RB_METHOD(eventInstanceSetCallback) {
     // TODO
 }
 
-FMOD_USERDATA_FUNC(FMOD_Studio_EventDescription_CreateInstance);
+FMOD_USERDATA_FUNC(FMOD_Studio_EventInstance, EventInstance);
 
 FMOD_CPU_USAGE_FUNC(FMOD_Studio_EventInstance, EventInstance);
 
