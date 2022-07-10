@@ -100,16 +100,15 @@
         VALUE return_val = fmod##klass##2rb(val); \
         rb_ary_push(return_ary, return_val);      \
     }                                             \
-    else                                          \
-    {                                             \
-        delete val;                               \
-    }                                             \
                                                   \
     FMOD_RESULT_RET
 
 #define FMOD_RESULT_SIMPLE \
     FMOD_RESULT_BASE       \
     FMOD_RESULT_RET
+
+DEF_FMOD_WRAPPER(System, FMOD_SYSTEM)
+DECL_TYPE(System);
 
 DEF_FMOD_WRAPPER(StudioSystem, FMOD_STUDIO_SYSTEM);
 DECL_TYPE(StudioSystem);
@@ -138,12 +137,15 @@ DECL_TYPE(CommandReplay);
 extern VALUE rb_mFMOD;
 extern VALUE rb_mFMOD_Core;
 extern VALUE rb_mFMOD_Studio;
+extern VALUE rb_cSystem;
 extern VALUE rb_cGUID;
 DEFINE_CONVERT_FUNC(FMOD_GUID);
 extern VALUE rb_c3D_Attributes;
 DEFINE_CONVERT_FUNC(FMOD_3D_ATTRIBUTES);
 extern VALUE rb_cVector;
 DEFINE_CONVERT_FUNC(FMOD_VECTOR);
+extern VALUE rb_cCreateSoundExInfo;
+DEFINE_CONVERT_FUNC(FMOD_CREATESOUNDEXINFO);
 
 extern VALUE rb_cStudioSystem;
 extern VALUE rb_cBank;
@@ -162,6 +164,10 @@ extern VALUE rb_cEventInstance;
 extern VALUE rb_cCommandReplay;
 extern VALUE rb_cCommandInfo;
 DEFINE_CONVERT_FUNC(FMOD_STUDIO_COMMAND_INFO);
+extern VALUE rb_cAdvancedSettings;
+DEFINE_CONVERT_FUNC(FMOD_STUDIO_ADVANCEDSETTINGS);
+extern VALUE rb_cSoundInfo;
+DEFINE_CONVERT_FUNC(FMOD_STUDIO_SOUND_INFO);
 
 void bindFmodStudioBank();
 void bindFmodStudioSystem();
@@ -172,8 +178,8 @@ void bindFmodStudioEventDescription();
 void bindFmodStudioEventInstance();
 void bindFmodStudioCommandReplay();
 
+void bindFmodSystem();
 void bindFmodCoreStructs();
-
 
 inline RB_METHOD(fmodErrorInit) {
     rb_raise(rb_eException, "You cannot instantiate this class directly.");
@@ -229,8 +235,8 @@ inline RB_METHOD(fmodErrorInit) {
     {                                                       \
         RB_UNUSED_PARAM;                                    \
         type *b = getPrivateData<type>(self);               \
-        FMOD_GUID *guid = new FMOD_GUID();                  \
-        FMOD_RESULT result = func_base##_GetID(b->p, guid); \
+        FMOD_GUID guid = FMOD_GUID();                       \
+        FMOD_RESULT result = func_base##_GetID(b->p, &guid);\
         FMOD_RESULT_NO_WRAP(guid, FMOD_GUID);               \
     }
 
@@ -316,8 +322,8 @@ inline RB_METHOD(fmodErrorInit) {
     {                                                                     \
         RB_UNUSED_PARAM;                                                  \
         type *b = getPrivateData<type>(self);                             \
-        FMOD_STUDIO_MEMORY_USAGE *usage = new FMOD_STUDIO_MEMORY_USAGE(); \
-        FMOD_RESULT result = func_base##_GetMemoryUsage(b->p, usage);     \
+        FMOD_STUDIO_MEMORY_USAGE usage = FMOD_STUDIO_MEMORY_USAGE();      \
+        FMOD_RESULT result = func_base##_GetMemoryUsage(b->p, &usage);    \
         FMOD_RESULT_NO_WRAP(usage, FMOD_STUDIO_MEMORY_USAGE);             \
     }
 

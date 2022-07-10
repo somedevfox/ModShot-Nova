@@ -4,48 +4,49 @@
 #include "binding-util.h"
 
 #define DEFINE_CONVERT_FUNC(type)                      \
-    VALUE fmod##type##2rb(type * p, bool free = true); \
-    type *rb2##type(VALUE self);
+    VALUE fmod##type##2rb(type p); \
+    type rb2##type(VALUE self);
 
 #define DECLARE_FMOD2RB(type, klass)           \
-    VALUE fmod##type##2rb(type * p, bool free) \
+    VALUE fmod##type##2rb(type p) \
     {                                          \
         VALUE self = rb_obj_alloc(klass);
 
 #define FMOD2RB(path, convert) \
-    rb_iv_set(self, "@" #path, convert(p->path));
+    rb_iv_set(self, "@" #path, convert(p.path));
 
 #define FMOD2RB_NAME(name, path, convert) \
-    rb_iv_set(self, "@" #name, convert(p->path));
+    rb_iv_set(self, "@" #name, convert(p.path));
 
 #define FMOD2RB_CAST(name, path, cast, convert) \
-    rb_iv_set(self, "@" #name, convert((cast)p->path));
+    rb_iv_set(self, "@" #name, convert((cast)p.path));
 
 #define FMOD2RB_STRUCT(path, type) \
-    rb_iv_set(self, "@" #path, fmod##type##2rb(&p->path, false));
+    rb_iv_set(self, "@" #path, fmod##type##2rb(p.path));
+
+#define FMOD2RB_STRUCT_NAME(name, path, type) \
+    rb_iv_set(self, "@" #name, fmod##type##2rb(p.path));
 
 #define FMOD2RB_END \
-    if (free)       \
-        delete p;   \
     return self;    \
     }
 
 #define DECLARE_RB2FMOD(type, klass) \
-    type *rb2##type(VALUE self)  \
+    type rb2##type(VALUE self)       \
     {                                \
-        type *p = new type();
+        type p = type();
 
 #define RB2FMOD(path, convert) \
-    p->path = convert(rb_iv_get(self, "@" #path));
+    p.path = convert(rb_iv_get(self, "@" #path));
 
 #define RB2FMOD_NAME(name, path, convert) \
-    p->path = convert(rb_iv_get(self, "@" #name));
+    p.path = convert(rb_iv_get(self, "@" #name));
 
 #define RB2FMOD_CAST(name, path, cast, convert) \
-    p->path = (cast)convert(rb_iv_get(self, "@" #name));
+    p.path = (cast)convert(rb_iv_get(self, "@" #name));
 
 #define RB2FMOD_STRUCT(path, type) \
-    p->path = *rb2##type(rb_iv_get(self, "@" #path));
+    p.path = rb2##type(rb_iv_get(self, "@" #path));
 
 #define RB2FMOD_END \
     return p;       \

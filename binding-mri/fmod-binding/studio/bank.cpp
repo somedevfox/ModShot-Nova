@@ -137,7 +137,7 @@ RB_METHOD(bankGetStringInfo)
     //? unsuccessful
     int retrieved;
     char *path = NULL;
-    FMOD_GUID *guid = NULL;
+    FMOD_GUID guid;
 
     FMOD_RESULT result = FMOD_Studio_Bank_GetStringInfo(
         b->p, index, NULL, NULL, 0, &retrieved);
@@ -148,25 +148,22 @@ RB_METHOD(bankGetStringInfo)
         //? Allocate memory for the string like in GetPath
         path = new char[retrieved];
         //? Create the GUID
-        guid = new FMOD_GUID();
+        guid = FMOD_GUID();
 
         //? Finally call the function for real
         //? Oh boy that was horrible
         result = FMOD_Studio_Bank_GetStringInfo(
-            b->p, index, guid, path, retrieved, &retrieved);
+            b->p, index, &guid, path, retrieved, &retrieved);
     }
 
     //? Not many functions need more than 1 return value
     //? and the functions that do are specialized, so no
     //? fancy macro here unfortunately
     FMOD_RESULT_BASE;
-    if (guid)
+    if (path)
     {
         VALUE return_val = fmodFMOD_GUID2rb(guid);
         rb_ary_push(return_ary, return_val);
-    }
-    if (path)
-    {
         rb_ary_push(return_ary, rb_str_new_cstr(path));
     }
     //? Hell is over!

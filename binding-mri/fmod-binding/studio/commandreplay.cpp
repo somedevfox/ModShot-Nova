@@ -60,9 +60,9 @@ RB_METHOD(commandReplayGetCommandInfo)
     rb_get_args(argc, argv, "i", &index RB_ARG_END);
 
     CommandReplay *b = getPrivateData<CommandReplay>(self);
-    FMOD_STUDIO_COMMAND_INFO *info = new FMOD_STUDIO_COMMAND_INFO();
+    FMOD_STUDIO_COMMAND_INFO info = FMOD_STUDIO_COMMAND_INFO();
 
-    FMOD_RESULT result = FMOD_Studio_CommandReplay_GetCommandInfo(b->p, index, info);
+    FMOD_RESULT result = FMOD_Studio_CommandReplay_GetCommandInfo(b->p, index, &info);
 
     FMOD_RESULT_NO_WRAP(info, FMOD_STUDIO_COMMAND_INFO);
 }

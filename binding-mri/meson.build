@@ -48,6 +48,7 @@ global_sources += [files(
     'fmod-binding/studio/commandreplay.cpp',
     'fmod-binding/studio/common_structs.cpp',
     'fmod-binding/core/fmod-core-binding.cpp',
+    'fmod-binding/core/system.cpp',
     'fmod-binding/core/common_structs.cpp',
     'fmod-binding/fmod_enums.cpp',
 )]

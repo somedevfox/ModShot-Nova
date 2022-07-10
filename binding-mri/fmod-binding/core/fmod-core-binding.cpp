@@ -9,4 +9,5 @@ void fmodCoreBindingInit() {
     rb_mFMOD_Core = rb_define_module_under(rb_mFMOD, "Core");
 
     bindFmodCoreStructs();
+    bindFmodSystem();
 }

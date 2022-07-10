@@ -34,10 +34,10 @@ RB_METHOD(descriptionGetParameterIndex)
     rb_get_args(argc, argv, "i", &index RB_ARG_END);
 
     EventDescription *b = getPrivateData<EventDescription>(self);
-    FMOD_STUDIO_PARAMETER_DESCRIPTION *description = new FMOD_STUDIO_PARAMETER_DESCRIPTION();
+    FMOD_STUDIO_PARAMETER_DESCRIPTION description = FMOD_STUDIO_PARAMETER_DESCRIPTION();
 
     FMOD_RESULT result = FMOD_Studio_EventDescription_GetParameterDescriptionByIndex(
-        b->p, index, description);
+        b->p, index, &description);
 
     FMOD_RESULT_NO_WRAP(description, FMOD_STUDIO_PARAMETER_DESCRIPTION);
 }
@@ -48,10 +48,10 @@ RB_METHOD(descriptionGetParameterName)
     rb_get_args(argc, argv, "z", &name RB_ARG_END);
 
     EventDescription *b = getPrivateData<EventDescription>(self);
-    FMOD_STUDIO_PARAMETER_DESCRIPTION *description = new FMOD_STUDIO_PARAMETER_DESCRIPTION();
+    FMOD_STUDIO_PARAMETER_DESCRIPTION description = FMOD_STUDIO_PARAMETER_DESCRIPTION();
 
     FMOD_RESULT result = FMOD_Studio_EventDescription_GetParameterDescriptionByName(
-        b->p, name, description);
+        b->p, name, &description);
 
     FMOD_RESULT_NO_WRAP(description, FMOD_STUDIO_PARAMETER_DESCRIPTION);
 }
@@ -61,14 +61,13 @@ RB_METHOD(descriptionGetParameterID)
     VALUE rb_id;
     rb_get_args(argc, argv, "o", &rb_id RB_ARG_END);
 
-    FMOD_STUDIO_PARAMETER_ID *id = rb2FMOD_STUDIO_PARAMETER_ID(rb_id);
+    FMOD_STUDIO_PARAMETER_ID id = rb2FMOD_STUDIO_PARAMETER_ID(rb_id);
     EventDescription *b = getPrivateData<EventDescription>(self);
-    FMOD_STUDIO_PARAMETER_DESCRIPTION *description = new FMOD_STUDIO_PARAMETER_DESCRIPTION();
+    FMOD_STUDIO_PARAMETER_DESCRIPTION description = FMOD_STUDIO_PARAMETER_DESCRIPTION();
 
     FMOD_RESULT result = FMOD_Studio_EventDescription_GetParameterDescriptionByID(
-        b->p, *id, description);
+        b->p, id, &description);
 
-    delete id; //? free the memory allocated by rb2FMOD_STUDIO_PARAMETER_ID
     FMOD_RESULT_NO_WRAP(description, FMOD_STUDIO_PARAMETER_DESCRIPTION);
 }
 
@@ -124,22 +123,21 @@ RB_METHOD(descriptionGetParameterLabelID)
     int labelindex;
     rb_get_args(argc, argv, "oi", &rb_id, &labelindex RB_ARG_END);
 
-    FMOD_STUDIO_PARAMETER_ID *id = rb2FMOD_STUDIO_PARAMETER_ID(rb_id);
+    FMOD_STUDIO_PARAMETER_ID id = rb2FMOD_STUDIO_PARAMETER_ID(rb_id);
     EventDescription *b = getPrivateData<EventDescription>(self);
     char *label = NULL;
     int retrieved;
 
     FMOD_RESULT result = FMOD_Studio_EventDescription_GetParameterLabelByID(
-        b->p, *id, labelindex, NULL, 0, &retrieved);
+        b->p, id, labelindex, NULL, 0, &retrieved);
     if (result == FMOD_OK)
     {
         label = new char[retrieved];
 
         result = FMOD_Studio_EventDescription_GetParameterLabelByID(
-            b->p, *id, labelindex, label, retrieved, &retrieved);
+            b->p, id, labelindex, label, retrieved, &retrieved);
     }
 
-    delete id; //? free the memory allocated by rb2FMOD_STUDIO_PARAMETER_ID
     FMOD_RESULT_CONVERT(label, rb_str_new_cstr);
 }
 
@@ -162,10 +160,10 @@ RB_METHOD(descriptionGetUserIndex)
     rb_get_args(argc, argv, "i", &index RB_ARG_END);
 
     EventDescription *b = getPrivateData<EventDescription>(self);
-    FMOD_STUDIO_USER_PROPERTY *property = new FMOD_STUDIO_USER_PROPERTY();
+    FMOD_STUDIO_USER_PROPERTY property = FMOD_STUDIO_USER_PROPERTY();
 
     FMOD_RESULT result = FMOD_Studio_EventDescription_GetUserPropertyByIndex(
-        b->p, index, property);
+        b->p, index, &property);
 
     FMOD_RESULT_NO_WRAP(property, FMOD_STUDIO_USER_PROPERTY);
 }
@@ -176,10 +174,10 @@ RB_METHOD(descriptionGetUser)
     rb_get_args(argc, argv, "z", &name RB_ARG_END);
 
     EventDescription *b = getPrivateData<EventDescription>(self);
-    FMOD_STUDIO_USER_PROPERTY *property = new FMOD_STUDIO_USER_PROPERTY();
+    FMOD_STUDIO_USER_PROPERTY property = FMOD_STUDIO_USER_PROPERTY();
 
     FMOD_RESULT result = FMOD_Studio_EventDescription_GetUserProperty(
-        b->p, name, property);
+        b->p, name, &property);
 
     FMOD_RESULT_NO_WRAP(property, FMOD_STUDIO_USER_PROPERTY);
 }
