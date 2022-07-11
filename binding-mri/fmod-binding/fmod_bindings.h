@@ -146,6 +146,8 @@ extern VALUE rb_cVector;
 DEFINE_CONVERT_FUNC(FMOD_VECTOR);
 extern VALUE rb_cCreateSoundExInfo;
 DEFINE_CONVERT_FUNC(FMOD_CREATESOUNDEXINFO);
+extern VALUE rb_cCPUUsage;
+DEFINE_CONVERT_FUNC(FMOD_CPU_USAGE);
 
 extern VALUE rb_cStudioSystem;
 extern VALUE rb_cBank;
@@ -168,6 +170,12 @@ extern VALUE rb_cAdvancedSettings;
 DEFINE_CONVERT_FUNC(FMOD_STUDIO_ADVANCEDSETTINGS);
 extern VALUE rb_cSoundInfo;
 DEFINE_CONVERT_FUNC(FMOD_STUDIO_SOUND_INFO);
+extern VALUE rb_cStudioCPUUsage;
+DEFINE_CONVERT_FUNC(FMOD_STUDIO_CPU_USAGE);
+extern VALUE rb_cBufferUsage;
+DEFINE_CONVERT_FUNC(FMOD_STUDIO_BUFFER_USAGE);
+extern VALUE rb_cBufferInfo;
+DEFINE_CONVERT_FUNC(FMOD_STUDIO_BUFFER_INFO);
 
 void bindFmodStudioBank();
 void bindFmodStudioSystem();

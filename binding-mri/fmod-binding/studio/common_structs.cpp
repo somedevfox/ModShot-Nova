@@ -97,6 +97,26 @@ FMOD2RB_STRUCT_NAME(ex_info, exinfo, FMOD_CREATESOUNDEXINFO);
 FMOD2RB_NAME(subsound_index, subsoundindex, INT2NUM);
 FMOD2RB_END;
 
+VALUE rb_cStudioCPUUsage = Qnil;
+DECLARE_FMOD2RB(FMOD_STUDIO_CPU_USAGE, rb_cStudioCPUUsage);
+FMOD2RB(update, DBL2NUM);
+FMOD2RB_END;
+
+VALUE rb_cBufferUsage = Qnil;
+DECLARE_FMOD2RB(FMOD_STUDIO_BUFFER_USAGE, rb_cBufferUsage);
+FMOD2RB_STRUCT_NAME(studio_command_queue, studiocommandqueue, FMOD_STUDIO_BUFFER_INFO);
+FMOD2RB_STRUCT_NAME(studio_handle, studiohandle, FMOD_STUDIO_BUFFER_INFO);
+FMOD2RB_END;
+
+VALUE rb_cBufferInfo = Qnil;
+DECLARE_FMOD2RB(FMOD_STUDIO_BUFFER_INFO, rb_cBufferInfo);
+FMOD2RB_NAME(current_usage, currentusage, INT2NUM);
+FMOD2RB_NAME(peak_usage, peakusage, INT2NUM);
+FMOD2RB(capacity, INT2NUM);
+FMOD2RB_NAME(stall_count, stallcount, INT2NUM);
+FMOD2RB_NAME(stall_time, stalltime, DBL2NUM);
+FMOD2RB_END;
+
 void bindFmodStudioStructs()
 {
     rb_cMemoryUsage = rb_define_class_under(rb_mFMOD_Studio, "MemoryUsage", rb_cObject);
@@ -148,4 +168,18 @@ void bindFmodStudioStructs()
     ATTR(rb_cSoundInfo, mode);
     ATTR(rb_cSoundInfo, ex_info);
     ATTR(rb_cSoundInfo, subsound_index);
+
+    rb_cStudioCPUUsage = rb_define_class_under(rb_mFMOD_Studio, "CPUUsage", rb_cObject);
+    ATTR(rb_cStudioCPUUsage, update);
+
+    rb_cBufferUsage = rb_define_class_under(rb_mFMOD_Studio, "BufferUsage", rb_cObject);
+    ATTR(rb_cBufferUsage, studio_command_queue);
+    ATTR(rb_cBufferUsage, studio_handle);
+
+    rb_cBufferInfo = rb_define_class_under(rb_mFMOD_Studio, "BufferInfo", rb_cObject);
+    ATTR(rb_cBufferInfo, current_usage);
+    ATTR(rb_cBufferInfo, peak_usage);
+    ATTR(rb_cBufferInfo, capacity);
+    ATTR(rb_cBufferInfo, stall_count);
+    ATTR(rb_cBufferInfo, stall_time);
 }

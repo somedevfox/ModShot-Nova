@@ -98,6 +98,16 @@ if (p.fsbguid) {
 }
 FMOD2RB_END;
 
+VALUE rb_cCPUUsage = Qnil;
+DECLARE_FMOD2RB(FMOD_CPU_USAGE, rb_cCPUUsage);
+FMOD2RB(dsp, DBL2NUM);
+FMOD2RB(stream, DBL2NUM);
+FMOD2RB(geometry, DBL2NUM);
+FMOD2RB(update, DBL2NUM);
+FMOD2RB(convolution1, DBL2NUM);
+FMOD2RB(convolution2, DBL2NUM);
+FMOD2RB_END;
+
 void bindFmodCoreStructs()
 {
     rb_cGUID = rb_define_class_under(rb_mFMOD_Core, "GUID", rb_cObject);
@@ -154,4 +164,12 @@ void bindFmodCoreStructs()
     ATTR(rb_cCreateSoundExInfo, min_midi_granularity);
     ATTR(rb_cCreateSoundExInfo, nonblock_thread_id);
     ATTR(rb_cCreateSoundExInfo, fsb);
+
+    rb_cCPUUsage = rb_define_class_under(rb_mFMOD_Core, "CPUUsage", rb_cObject);
+    ATTR(rb_cCPUUsage, dsp);
+    ATTR(rb_cCPUUsage, stream);
+    ATTR(rb_cCPUUsage, geometry);
+    ATTR(rb_cCPUUsage, update);
+    ATTR(rb_cCPUUsage, convolution1);
+    ATTR(rb_cCPUUsage, convolution2);
 }
