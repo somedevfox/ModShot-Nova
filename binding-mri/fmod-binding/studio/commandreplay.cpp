@@ -221,12 +221,15 @@ RB_METHOD(commandReplaySetCreateInstanceCallback) {
 
 FMOD_USERDATA_FUNC(FMOD_Studio_CommandReplay, CommandReplay);
 
+FMOD_EQUAL_FUNC(CommandReplay);
+
 void bindFmodStudioCommandReplay()
 {
     rb_cCommandReplay = rb_define_class_under(
         rb_mFMOD_Studio, "CommandReplay", rb_cObject);
     rb_define_alloc_func(rb_cCommandReplay, classAllocate<&CommandReplayType>);
     _rb_define_method(rb_cCommandReplay, "initialize", fmodErrorInit);
+    _rb_define_method(rb_cCommandReplay, "==", fmodEqual);
 
     _rb_define_method(rb_cCommandReplay, "is_valid", fmodIsValid);
     _rb_define_method(rb_cCommandReplay, "get_system", commandReplayGetSystem);

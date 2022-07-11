@@ -327,11 +327,14 @@ RB_METHOD(bankGetEventList)
     FMOD_RESULT_RET;
 }
 
+FMOD_EQUAL_FUNC(Bank);
+
 void bindFmodStudioBank()
 {
     rb_cBank = rb_define_class_under(rb_mFMOD_Studio, "Bank", rb_cObject);
     rb_define_alloc_func(rb_cBank, classAllocate<&BankType>);
     _rb_define_method(rb_cBank, "initialize", fmodErrorInit);
+    _rb_define_method(rb_cBank, "==", fmodEqual);
 
     _rb_define_method(rb_cBank, "is_valid", fmodIsValid);
     _rb_define_method(rb_cBank, "get_id", fmodGetID);

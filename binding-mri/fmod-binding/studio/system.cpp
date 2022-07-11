@@ -746,11 +746,14 @@ FMOD_USERDATA_FUNC(FMOD_Studio_System, StudioSystem);
 
 FMOD_MEMORY_USAGE_FUNC(FMOD_Studio_System, StudioSystem);
 
+FMOD_EQUAL_FUNC(StudioSystem);
+
 VALUE rb_cStudioSystem = Qnil;
 
 void bindFmodStudioSystem() {
     rb_cStudioSystem = rb_define_class_under(rb_mFMOD_Studio, "System", rb_cObject);
     rb_define_alloc_func(rb_cStudioSystem, classAllocate<&StudioSystemType>);
+    _rb_define_method(rb_cStudioSystem, "==", fmodEqual);
 
     _rb_define_module_function(rb_cStudioSystem, "new", systemNew);
     _rb_define_method(rb_cStudioSystem, "is_valid", fmodIsValid);

@@ -62,7 +62,7 @@ array = []
 end
 ```
 So, be mindful of what you write! Luckily instances of objects from these bindings are very small so it's not a big deal if your code isn't perfect, but **PLEASE** do be mindful of this! RMXP already has a similar problem with Bitmaps, so if you've dealt with them you should know what to do.
-There is an `==` operator provided (TODO) that will check if an object is the same for you as well. You can usually assign a value `nil` to get it garbage collected.
+There is an `==` operator provided that will check if an object is the same for you as well. You can usually assign a value `nil` to get it garbage collected.
 
 A feature is provided to automatically release **some** FMOD objects (Like System, Bank, etc) but it is disabled by default.
 This is because some FMOD functions will allow you to "get back" an object after it has been garbage collected from ruby, and this feature messes with that.

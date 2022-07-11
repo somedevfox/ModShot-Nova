@@ -90,11 +90,14 @@ RB_METHOD(busGetChannelGroup) {
 FMOD_CPU_USAGE_FUNC(FMOD_Studio_Bus, Bus);
 FMOD_MEMORY_USAGE_FUNC(FMOD_Studio_Bus, Bus);
 
+FMOD_EQUAL_FUNC(Bus);
+
 void bindFmodStudioBus()
 {
     rb_cBus = rb_define_class_under(rb_mFMOD_Studio, "Bus", rb_cObject);
     rb_define_alloc_func(rb_cBus, classAllocate<&BusType>);
     _rb_define_method(rb_cBus, "initialize", fmodErrorInit);
+    _rb_define_method(rb_cBus, "==", fmodEqual);
 
     _rb_define_method(rb_cBus, "is_valid", fmodIsValid);
     _rb_define_method(rb_cBus, "get_id", fmodGetID);

@@ -58,14 +58,14 @@
 #define FMOD_RESULT_RET return return_ary;
 
 //! We use alloc since it skirts around initializing the object
-#define FMOD_RESULT_WRAP(val, wrap)                                    \
-    FMOD_RESULT_BASE                                                   \
-    if (result == FMOD_OK)                                             \
-    {                                                                  \
-        VALUE return_val = rb_obj_alloc(rb_c##wrap);                   \
-        setPrivateData(return_val, new wrap(val));                     \
-        rb_ary_push(return_ary, return_val);                           \
-    }                                                                  \
+#define FMOD_RESULT_WRAP(val, wrap)                  \
+    FMOD_RESULT_BASE                                 \
+    if (result == FMOD_OK)                           \
+    {                                                \
+        VALUE return_val = rb_obj_alloc(rb_c##wrap); \
+        setPrivateData(return_val, new wrap(val));   \
+        rb_ary_push(return_ary, return_val);         \
+    }                                                \
     FMOD_RESULT_RET
 
 #define FMOD_RESULT_CONVERT(val, convert)      \
@@ -189,7 +189,8 @@ void bindFmodStudioCommandReplay();
 void bindFmodSystem();
 void bindFmodCoreStructs();
 
-inline RB_METHOD(fmodErrorInit) {
+inline RB_METHOD(fmodErrorInit)
+{
     rb_raise(rb_eException, "You cannot instantiate this class directly.");
 
     return Qnil;
@@ -238,14 +239,14 @@ inline RB_METHOD(fmodErrorInit) {
         return BOOL2RB(func_base##_IsValid(b->p)); \
     }
 
-#define FMOD_ID_FUNC(func_base, type)                       \
-    RB_METHOD(fmodGetID)                                    \
-    {                                                       \
-        RB_UNUSED_PARAM;                                    \
-        type *b = getPrivateData<type>(self);               \
-        FMOD_GUID guid = FMOD_GUID();                       \
-        FMOD_RESULT result = func_base##_GetID(b->p, &guid);\
-        FMOD_RESULT_NO_WRAP(guid, FMOD_GUID);               \
+#define FMOD_ID_FUNC(func_base, type)                        \
+    RB_METHOD(fmodGetID)                                     \
+    {                                                        \
+        RB_UNUSED_PARAM;                                     \
+        type *b = getPrivateData<type>(self);                \
+        FMOD_GUID guid = FMOD_GUID();                        \
+        FMOD_RESULT result = func_base##_GetID(b->p, &guid); \
+        FMOD_RESULT_NO_WRAP(guid, FMOD_GUID);                \
     }
 
 #define FMOD_PATH_FUNC(func_base, type)                                      \
@@ -325,14 +326,26 @@ inline RB_METHOD(fmodErrorInit) {
         FMOD_RESULT_RET;                                  \
     }
 
-#define FMOD_MEMORY_USAGE_FUNC(func_base, type)                           \
-    RB_METHOD(fmodGetMemoryUsage)                                         \
-    {                                                                     \
-        RB_UNUSED_PARAM;                                                  \
-        type *b = getPrivateData<type>(self);                             \
-        FMOD_STUDIO_MEMORY_USAGE usage = FMOD_STUDIO_MEMORY_USAGE();      \
-        FMOD_RESULT result = func_base##_GetMemoryUsage(b->p, &usage);    \
-        FMOD_RESULT_NO_WRAP(usage, FMOD_STUDIO_MEMORY_USAGE);             \
+#define FMOD_MEMORY_USAGE_FUNC(func_base, type)                        \
+    RB_METHOD(fmodGetMemoryUsage)                                      \
+    {                                                                  \
+        RB_UNUSED_PARAM;                                               \
+        type *b = getPrivateData<type>(self);                          \
+        FMOD_STUDIO_MEMORY_USAGE usage = FMOD_STUDIO_MEMORY_USAGE();   \
+        FMOD_RESULT result = func_base##_GetMemoryUsage(b->p, &usage); \
+        FMOD_RESULT_NO_WRAP(usage, FMOD_STUDIO_MEMORY_USAGE);          \
+    }
+
+#define FMOD_EQUAL_FUNC(type)                                      \
+    RB_METHOD(fmodEqual)                                           \
+    {                                                              \
+        VALUE otherObj;                                            \
+        rb_get_args(argc, argv, "o", &otherObj RB_ARG_END);        \
+        if (!rb_typeddata_is_kind_of(otherObj, &type##Type))       \
+            return Qfalse;                                         \
+        type *p = getPrivateData<type>(self);                      \
+        type *b = getPrivateDataCheck<type>(otherObj, type##Type); \
+        return rb_bool_new(p->p == b->p);                          \
     }
 
 #endif

@@ -412,6 +412,8 @@ FMOD_CPU_USAGE_FUNC(FMOD_Studio_EventInstance, EventInstance);
 
 FMOD_MEMORY_USAGE_FUNC(FMOD_Studio_EventInstance, EventInstance);
 
+FMOD_EQUAL_FUNC(EventInstance);
+
 VALUE rb_cEventInstance = Qnil;
 
 void bindFmodStudioEventInstance()
@@ -420,6 +422,7 @@ void bindFmodStudioEventInstance()
         rb_mFMOD_Studio, "EventInstance", rb_cObject);
     rb_define_alloc_func(rb_cEventInstance, classAllocate<&EventInstanceType>);
     _rb_define_method(rb_cEventInstance, "initialize", fmodErrorInit);
+    _rb_define_method(rb_cEventInstance, "==", fmodEqual);
 
     _rb_define_method(rb_cEventInstance, "is_valid", fmodIsValid);
     _rb_define_method(rb_cEventInstance, "get_description", eventInstanceGetDescription);

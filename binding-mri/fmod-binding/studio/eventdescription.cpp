@@ -408,12 +408,15 @@ RB_METHOD(descriptionSetCallback)
 
 FMOD_USERDATA_FUNC(FMOD_Studio_EventDescription, EventDescription);
 
+FMOD_EQUAL_FUNC(EventDescription);
+
 void bindFmodStudioEventDescription()
 {
     rb_cEventDescription = rb_define_class_under(
         rb_mFMOD_Studio, "EventDescription", rb_cObject);
     rb_define_alloc_func(rb_cEventDescription, classAllocate<&EventDescriptionType>);
     _rb_define_method(rb_cEventDescription, "initialize", fmodErrorInit);
+    _rb_define_method(rb_cEventDescription, "==", fmodEqual);
 
     _rb_define_method(rb_cEventDescription, "is_valid", fmodIsValid);
     _rb_define_method(rb_cEventDescription, "get_id", fmodGetID);
