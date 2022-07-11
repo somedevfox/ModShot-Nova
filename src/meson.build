@@ -1,6 +1,6 @@
 boost = dependency('boost', version: '>=1.49', modules: ['program_options'], static: build_static)
 physfs = dependency('physfs', version: '>=2.1', static: build_static)
-sdl2 = dependency('SDL2')
+sdl2 = dependency('SDL2', static: build_static)
 freetype = dependency('freetype2', static: build_static)
 harfbuzz = dependency('harfbuzz', static: build_static)
 sdl2_ttf = dependency('SDL2_ttf', static: build_static)
