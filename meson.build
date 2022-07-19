@@ -6,7 +6,7 @@ project(
     license: 'GPL-2.0',
     meson_version: '>=0.60.0',
     default_options: [
-        'cpp_std=c++14',
+        'cpp_std=c++17',
         'buildtype=release'
     ]
 )
@@ -39,6 +39,11 @@ if gfx_backend == 'gles'
     global_args += '-DGLES2_HEADER'
 elif gfx_backend == 'gl'
     global_dependencies += dependency('gl')
+endif
+
+fmod = get_option('fmod')
+if get_option('auto_clean_fmod')
+    global_args += '-DAUTO_CLEAN_FMOD'
 endif
 
 # ====================
@@ -105,6 +110,10 @@ subdir('assets')
 subdir('scripts')
 
 global_include_dirs += include_directories('src', 'binding-mri')
+
+if fmod
+    global_include_dirs += include_directories('fmod/api/core/inc', 'fmod/api/fsbank/inc', 'fmod/api/studio/inc')
+endif
 
 rpath = ''
 if host_system == 'windows'

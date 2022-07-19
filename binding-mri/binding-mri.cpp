@@ -28,7 +28,9 @@
 #include "sdl-util.h"
 #include "debugwriter.h"
 #include "graphics.h"
+#ifndef USE_FMOD
 #include "audio.h"
+#endif
 #include "boost-hash.h"
 #include "version.h"
 #include "oneshot.h"
@@ -48,6 +50,9 @@
 #include <SDL2/SDL_filesystem.h>
 
 extern const char module_rpg1[];
+#ifdef USE_FMOD
+extern const char fmod_enums[];
+#endif
 
 static void mriBindingExecute();
 static void mriBindingTerminate();
@@ -75,7 +80,6 @@ void windowVXBindingInit();
 void tilemapVXBindingInit();
 
 void inputBindingInit();
-void audioBindingInit();
 void graphicsBindingInit();
 
 void fileIntBindingInit();
@@ -89,7 +93,13 @@ void nikoBindingInit();
 void oneshotBindingInit();
 void modshotBindingInit();
 void steamBindingInit();
+#ifndef USE_FMOD
+void audioBindingInit();
 void aleffectBindingInit();
+#else
+void fmodCoreBindingInit();
+void fmodStudioBindingInit();
+#endif
 void screenBindingInit();
 RB_METHOD(mriPrint);
 RB_METHOD(mriP);
@@ -117,7 +127,6 @@ static void mriBindingInit()
 	tilemapBindingInit();
 
 	inputBindingInit();
-	audioBindingInit();
 	graphicsBindingInit();
 
 	fileIntBindingInit();
@@ -127,7 +136,13 @@ static void mriBindingInit()
 	oneshotBindingInit();
 	modshotBindingInit();
 	steamBindingInit();
+	#ifndef USE_FMOD
+	audioBindingInit();
 	aleffectBindingInit();
+	#else
+	fmodCoreBindingInit();
+	fmodStudioBindingInit();
+	#endif
 	screenBindingInit();
 	rb_define_global_const("MODSHOT_VERSION", rb_str_new_cstr(MODSHOT_VERSION));
 	if (rgssVer >= 3)
@@ -150,6 +165,10 @@ static void mriBindingInit()
 	}
 
 	rb_eval_string(module_rpg1);
+
+	#ifdef USE_FMOD
+	rb_eval_string(fmod_enums);
+	#endif
 
 	VALUE mod = rb_define_module("MKXP");
 	_rb_define_module_function(mod, "data_directory", mkxpDataDirectory);
@@ -296,7 +315,9 @@ static VALUE rgssMainRescue(VALUE arg, VALUE exc)
 static void processReset()
 {
 	shState->graphics().reset();
+	#ifndef USE_FMOD
 	shState->audio().reset();
+	#endif
 
 	shState->rtData().rqReset.clear();
 	shState->graphics().repaintWait(shState->rtData().rqResetFinish,
@@ -663,16 +684,6 @@ static void mriBindingExecute()
 		rubyArgsC.push_back(callThreshold.c_str());
 		rubyArgsC.push_back(maxVersions.c_str());
 		rubyArgsC.push_back(greedyVersioning.c_str());
-	}
-
-	if (conf.jitEnabled) {
-		std::string verboseLevel("-jit-verbose="); verboseLevel += std::to_string(conf.jitVerbosity);
-        std::string maxCache("--jit-max-cache="); maxCache += std::to_string(conf.jitMaxCache);
-        std::string minCalls("--jit-min-calls="); minCalls += std::to_string(conf.jitMinCalls);
-        rubyArgsC.push_back("--jit");
-        rubyArgsC.push_back(verboseLevel.c_str());
-        rubyArgsC.push_back(maxCache.c_str());
-        rubyArgsC.push_back(minCalls.c_str());
 	}
 
 	node = ruby_options(rubyArgsC.size(), const_cast<char**>(rubyArgsC.data()));
