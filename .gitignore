@@ -1,28 +1,24 @@
-*.o
-*.pro.*
-*.bak
-*.xxd
-*.exe
-*.app
-*.bmp
-*.lproj
-
-*.tmp
-*.vcxproj
-*.filters
-*.sln
-*.user
-*.tlog
-
-.vs/
-bin/
-lib/
-*.dir/
-x64/
-
+#> Game itself
 /oneshot
-/steamshim_parent/steamshim
 
+#> Linter output
+oclint/
+
+#> Valve Steamworks SDK (Cannot be redistributed)
+steamworks/
+
+#> Build Scripts??
+!build-entrypoint-linux.sh
+!build-entrypoint-windows.bat
+
+#> Build Artifacts
+out/
+/fmod/
+.qmake.stash
+CMakeCache.txt
+CMakeFiles/
+cmake_install\.cmake
+package/
 __pycache__
 /build*
 /m32build
@@ -31,34 +27,30 @@ __pycache__
 /release
 steamshim_parent/build/
 *.out
-
+bin/
+lib/
+*.dir/
+x64/
+*.o
+*.pro.*
+*.bak
+*.xxd
+*.exe
+*.app
+*.bmp
+*.lproj
+*.tmp
+*.vcxproj
+*.filters
+*.sln
+*.user
+*.tlog
+/steamshim_parent/steamshim
 object_script.*
 rpgscript.bat
 rpgscript - mklang.bat
 *.pot
 xScripts.rxdata
 
-.qmake.stash
-CMakeCache.txt
-CMakeFiles/
-cmake_install\.cmake
-conanbuildinfo\.cmake
-conaninfo\.txt
-conanbuildinfo\.txt
-conan_imports_manifest\.txt
-package/
-
-oclint/
-
-steamworks/
-.vs/
-assets/icon.ico
-assets/icon.ico
-
-!build-entrypoint-linux.sh
-!build-entrypoint-windows.bat
-
-.vscode
-out/
-/fmod/
+#> GNU Debugger Output Files
 .gdb_history
