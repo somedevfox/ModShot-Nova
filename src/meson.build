@@ -12,7 +12,6 @@ jpeg = dependency('libjpeg', static: build_static)
 tiff = dependency('libtiff-4', static: build_static)
 webp = dependency('libwebp', static: build_static)
 zlib = dependency('zlib', static: build_static)
-nsgif = dependency('libnsgif', static: build_static)
 
 fmod_arch_prefix = ''
 if host_system == 'windows'
@@ -95,7 +94,7 @@ global_include_dirs += include_directories('.',
     'util/headers'
 )
 
-global_dependencies += [boost, bz2, zlib, sdl2, pixman, physfs, iconv, sdl2_ttf, sigcxx, sdl2_image, png, jpeg, nsgif, freetype, tiff, webp, harfbuzz]
+global_dependencies += [boost, bz2, zlib, sdl2, pixman, physfs, iconv, sdl2_ttf, sigcxx, sdl2_image, png, jpeg, freetype, tiff, webp, harfbuzz]
 
 if host_system == 'windows'
     global_dependencies += compilers['cpp'].find_library('wsock32')
