@@ -28,7 +28,7 @@
 #include "util.h"
 #include "debugwriter.h"
 
-#include <SDL2/SDL_sound.h>
+#include <SDL_sound.h>
 
 #define SE_CACHE_MEM (10*1024*1024) // 10 MB
 

@@ -22,7 +22,7 @@
 #include "aldatasource.h"
 #include "exception.h"
 
-#include <SDL2/SDL_sound.h>
+#include <SDL_sound.h>
 
 struct SDLSoundSource : ALDataSource
 {

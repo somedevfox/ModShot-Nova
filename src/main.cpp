@@ -27,7 +27,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #ifndef USE_FMOD
-#include <SDL2/SDL_sound.h>
+#include <SDL_sound.h>
 #else
 #include <fmod_studio.h>
 #include <fmod_errors.h>
